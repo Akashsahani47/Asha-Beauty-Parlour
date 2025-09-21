@@ -36,7 +36,7 @@ const Footer = () => {
           {/* Brand Column */}
           <div className={`transform transition-all duration-1000 ease-out ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
             <div className="flex items-center mb-6">
-              <span className="text-3xl font-bold animate-bounce">N</span>
+              <span className="text-3xl font-bold bg-black animate-bounce">ASHA</span>
               <span className="ml-2 text-xl font-semibold">Beauty Parlour</span>
             </div>
             <p className="mb-6 text-[#FFE2D6]/80 leading-relaxed">
