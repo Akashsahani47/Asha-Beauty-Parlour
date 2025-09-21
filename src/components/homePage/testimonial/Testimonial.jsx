@@ -193,7 +193,7 @@ const Testimonials = () => {
                 className='absolute -bottom-4 -right-4 bg-[#FFE2D6] border-4 border-[#413329] rounded-2xl px-4 py-2 shadow-lg'
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.01, duration: 0.01 }}
+                transition={{ delay: 0.6, duration: 0.5 }}
                 viewport={{ once: true }}
               >
                 <div className='text-[#413329] font-bold text-center'>
