@@ -187,7 +187,7 @@ const Testimonials = () => {
           >
             <div className='relative'>
               <div className='w-48 h-48 bg-[#413329] rounded-full flex items-center justify-center text-[#FFE2D6] text-6xl font-bold rotate-12'>
-                <Counter value={4} duration={0.001} />
+                <Counter value={4} duration={0.01} />
               </div>
               <motion.div 
                 className='absolute -bottom-4 -right-4 bg-[#FFE2D6] border-4 border-[#413329] rounded-2xl px-4 py-2 shadow-lg'
