@@ -12,7 +12,7 @@ const Header = () => {
     <>
       <div className=' flex justify-around bg-[#FFE2D6] p-4 md:p-6 items-center relative'>
         {/* Logo */}
-        <span className='font-bold text-2xl animate-bounce'>N</span>
+        <span className='font-bold text-2xl animate-bounce'>ASHA<span>
         
         {/* Mobile Login Button - Visible only on mobile */}
         <div className='md:hidden border border-[#413329] py-2 px-6 hover:bg-[#413329] hover:text-amber-50 transform duration-200 cursor-pointer'>
