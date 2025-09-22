@@ -1,6 +1,8 @@
 'use client'
 import React, { useState } from "react";
 import toast, { Toaster } from 'react-hot-toast';
+import { useRouter } from "next/navigation";
+import { useAuth } from '@/context/AuthContext';
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -11,8 +13,10 @@ const Auth = () => {
     phone: "",
     rememberMe: false
   });
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const { login } = useAuth();
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -20,7 +24,6 @@ const Auth = () => {
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
-    // Clear error when user starts typing
     if (error) setError("");
   };
 
@@ -30,11 +33,11 @@ const Auth = () => {
     setError("");
 
     try {
+      // Use relative paths to avoid CORS issues
       const url = isLogin 
         ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/login`
         : `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/signup`;
       
-      // Prepare data for backend
       const requestData = isLogin
         ? {
             email: formData.email,
@@ -47,7 +50,9 @@ const Auth = () => {
             phoneNo: formData.phone
           };
 
-      // Show loading toast
+      console.log('🔐 Sending login request to:', url);
+      console.log('📤 Request data:', requestData);
+
       const loadingToast = toast.loading(isLogin ? 'Signing in...' : 'Creating account...');
 
       const response = await fetch(url, {
@@ -59,50 +64,84 @@ const Auth = () => {
       });
 
       const data = await response.json();
+      console.log('📥 Login response:', data);
 
       if (!response.ok) {
-        // Dismiss loading toast and show error
         toast.dismiss(loadingToast);
-        throw new Error(data.message || "Authentication failed");
+        throw new Error(data.message || `Authentication failed with status ${response.status}`);
       }
 
-      // Handle successful authentication
       if (isLogin) {
-        // Store token if remember me is checked
+        // ✅ Store token based on remember me preference
         if (formData.rememberMe) {
           localStorage.setItem("authToken", data.token);
+          console.log('💾 Token saved to localStorage (remember me enabled)');
         } else {
           sessionStorage.setItem("authToken", data.token);
+          console.log('💾 Token saved to sessionStorage (remember me disabled)');
         }
         
-        // Show success toast
+        // ✅ Update global auth state
+        if (data.token && data.user) {
+          login(data.user, data.token);
+          console.log('✅ Global state updated with user:', data.user.name);
+        } else {
+          // If backend doesn't return user data, fetch it
+          try {
+            console.log('🔄 Fetching user data separately...');
+            const userResponse = await fetch(`/api/user/me`, {
+              headers: {
+                'Authorization': `Bearer ${data.token}`,
+                'Content-Type': 'application/json',
+              },
+            });
+            
+            if (userResponse.ok) {
+              const userData = await userResponse.json();
+              login(userData, data.token);
+              console.log('✅ User data fetched successfully:', userData.name);
+            } else {
+              throw new Error('Failed to fetch user data');
+            }
+          } catch (userError) {
+            console.error('❌ Error fetching user data:', userError);
+            // Still proceed with login but show warning
+            toast.dismiss(loadingToast);
+            toast.success('Login successful! Redirecting...');
+            router.push('/');
+            return;
+          }
+        }
+        
         toast.dismiss(loadingToast);
         toast.success('Login successful! Redirecting...');
-        console.log("Login successful:", data);
-        // Redirect user or update app state here
+        
+        // ✅ Small delay to ensure state is updated before redirect
+        setTimeout(() => {
+          router.push('/');
+          router.refresh();
+        }, 500);
+        
       } else {
-        // Show success toast
+        // For signup, just show success and switch to login
         toast.dismiss(loadingToast);
         toast.success('Account created successfully! You can now login.');
-        console.log("Signup successful:", data);
-        // Optionally switch to login mode or redirect
+        console.log("✅ Signup successful");
+        
         setIsLogin(true);
+        setFormData({
+          name: "",
+          email: "",
+          password: "",
+          phone: "",
+          rememberMe: false
+        });
       }
-
-      // Reset form
-      setFormData({
-        name: "",
-        email: "",
-        password: "",
-        phone: "",
-        rememberMe: false
-      });
 
     } catch (err) {
       setError(err.message);
-      // Show error toast
       toast.error(err.message || 'Something went wrong!');
-      console.error("Authentication error:", err);
+      console.error("❌ Authentication error:", err);
     } finally {
       setLoading(false);
     }
@@ -114,7 +153,7 @@ const Auth = () => {
       <Toaster
         position="top-right"
         toastOptions={{
-          duration: 4000,
+          duration: 5000,
           style: {
             background: '#413329',
             color: '#FFE2D6',
@@ -122,7 +161,7 @@ const Auth = () => {
             fontWeight: '500',
           },
           success: {
-            duration: 3000,
+            duration: 5000,
             iconTheme: {
               primary: '#4ade80',
               secondary: '#FFE2D6',

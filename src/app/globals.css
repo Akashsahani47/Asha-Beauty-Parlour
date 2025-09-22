@@ -68,3 +68,7 @@
         .animate-pulse-slow {
           animation: pulse-slow 4s infinite;
         }
+
+body::-webkit-scrollbar{
+  display:none;
+}

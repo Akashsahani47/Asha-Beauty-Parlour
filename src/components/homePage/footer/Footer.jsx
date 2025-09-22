@@ -36,7 +36,7 @@ const Footer = () => {
           {/* Brand Column */}
           <div className={`transform transition-all duration-1000 ease-out ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
             <div className="flex items-center mb-6">
-              <span className="text-3xl font-bold bg-black animate-bounce">ASHA</span>
+              <span className="text-3xl font-bold  animate-bounce">ASHA</span>
               <span className="ml-2 text-xl font-semibold">Beauty Parlour</span>
             </div>
             <p className="mb-6 text-[#FFE2D6]/80 leading-relaxed">
@@ -149,7 +149,7 @@ const Footer = () => {
                   📍
                 </div>
                 <div>
-                  <p className="text-[#FFE2D6]/80">Rati Nath Basu Path, Old Sharwon Road, Near Pani tanki</p>
+                  <p className="text-[#FFE2D6]/80">FPP2+785, Jhoushagari, Deoghar, Jharkhand 814112</p>
                   <p className="text-[#FFE2D6]/60 text-sm mt-1">Click to see in Google Maps</p>
                 </div>
               </div>

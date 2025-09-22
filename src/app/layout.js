@@ -1,6 +1,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/homePage/header/Header";
+import { AuthProvider } from '@/context/AuthContext';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -12,6 +13,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+// Metadata for SEO - this should be exported separately
 export const metadata = {
   title: "Asha Beauty Parlour | Professional Salon & Makeup Services",
   description:
@@ -35,7 +37,7 @@ export const metadata = {
     siteName: "Asha Beauty Parlour",
     images: [
       {
-        url: "/og-image.jpg", // 👈 add an actual image inside public/
+        url: "/og-image.jpg",
         width: 1200,
         height: 630,
         alt: "Asha Beauty Parlour",
@@ -49,7 +51,7 @@ export const metadata = {
     title: "Asha Beauty Parlour | Professional Salon & Makeup Services",
     description:
       "Expert hairstyling, makeup artistry, and facials – only at Asha Beauty Parlour.",
-    images: ["/og-image.jpg"], // 👈 same image
+    images: ["/og-image.jpg"],
   },
   icons: {
     icon: "/favicon.ico",
@@ -59,9 +61,13 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <Header/>
-        {children}
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <AuthProvider>
+          <Header />
+          <main className="min-h-screen">
+            {children}
+          </main>
+        </AuthProvider>
       </body>
     </html>
   );
