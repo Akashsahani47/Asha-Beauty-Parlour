@@ -1,5 +1,6 @@
 'use client'
 import React, { useState } from "react";
+import toast, { Toaster } from 'react-hot-toast';
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -10,6 +11,8 @@ const Auth = () => {
     phone: "",
     rememberMe: false
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -17,27 +20,141 @@ const Auth = () => {
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
+    // Clear error when user starts typing
+    if (error) setError("");
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log('Form submitted:', formData);
+    setLoading(true);
+    setError("");
+
+    try {
+      const url = isLogin 
+        ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/login`
+        : `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/signup`;
+      
+      // Prepare data for backend
+      const requestData = isLogin
+        ? {
+            email: formData.email,
+            password: formData.password
+          }
+        : {
+            name: formData.name,
+            email: formData.email,
+            password: formData.password,
+            phoneNo: formData.phone
+          };
+
+      // Show loading toast
+      const loadingToast = toast.loading(isLogin ? 'Signing in...' : 'Creating account...');
+
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        // Dismiss loading toast and show error
+        toast.dismiss(loadingToast);
+        throw new Error(data.message || "Authentication failed");
+      }
+
+      // Handle successful authentication
+      if (isLogin) {
+        // Store token if remember me is checked
+        if (formData.rememberMe) {
+          localStorage.setItem("authToken", data.token);
+        } else {
+          sessionStorage.setItem("authToken", data.token);
+        }
+        
+        // Show success toast
+        toast.dismiss(loadingToast);
+        toast.success('Login successful! Redirecting...');
+        console.log("Login successful:", data);
+        // Redirect user or update app state here
+      } else {
+        // Show success toast
+        toast.dismiss(loadingToast);
+        toast.success('Account created successfully! You can now login.');
+        console.log("Signup successful:", data);
+        // Optionally switch to login mode or redirect
+        setIsLogin(true);
+      }
+
+      // Reset form
+      setFormData({
+        name: "",
+        email: "",
+        password: "",
+        phone: "",
+        rememberMe: false
+      });
+
+    } catch (err) {
+      setError(err.message);
+      // Show error toast
+      toast.error(err.message || 'Something went wrong!');
+      console.error("Authentication error:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#FFE2D6] to-[#ffd1bf] py-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
+      {/* Toast Container */}
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          duration: 4000,
+          style: {
+            background: '#413329',
+            color: '#FFE2D6',
+            borderRadius: '12px',
+            fontWeight: '500',
+          },
+          success: {
+            duration: 3000,
+            iconTheme: {
+              primary: '#4ade80',
+              secondary: '#FFE2D6',
+            },
+          },
+          error: {
+            duration: 5000,
+            iconTheme: {
+              primary: '#ef4444',
+              secondary: '#FFE2D6',
+            },
+          },
+          loading: {
+            iconTheme: {
+              primary: '#FFE2D6',
+              secondary: '#413329',
+            },
+          },
+        }}
+      />
+      
       <div className="w-full max-w-md">
         {/* Auth Card */}
         <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
-          
+
           {/* Toggle Switch */}
           <div className="flex bg-[#413329]">
             <button
               onClick={() => setIsLogin(true)}
               className={`flex-1 py-4 px-6 text-center font-semibold transition-all duration-300 ${
-                isLogin 
-                  ? 'bg-[#FFE2D6] text-[#413329]' 
+                isLogin
+                  ? 'bg-[#FFE2D6] text-[#413329]'
                   : 'text-[#FFE2D6] hover:bg-[#413329]/80'
               }`}
             >
@@ -46,8 +163,8 @@ const Auth = () => {
             <button
               onClick={() => setIsLogin(false)}
               className={`flex-1 py-4 px-6 text-center font-semibold transition-all duration-300 ${
-                !isLogin 
-                  ? 'bg-[#FFE2D6] text-[#413329]' 
+                !isLogin
+                  ? 'bg-[#FFE2D6] text-[#413329]'
                   : 'text-[#FFE2D6] hover:bg-[#413329]/80'
               }`}
             >
@@ -63,6 +180,13 @@ const Auth = () => {
             <p className="text-[#413329]/70 text-center mb-8">
               {isLogin ? 'Sign in to your account' : 'Join us today!'}
             </p>
+
+            {/* Error Message */}
+            {error && (
+              <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg text-sm">
+                {error}
+              </div>
+            )}
 
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Name Field - Only for Sign Up */}
@@ -152,9 +276,12 @@ const Auth = () => {
               {/* Submit Button */}
               <button
                 type="submit"
-                className="w-full bg-[#413329] text-[#FFE2D6] hover:bg-[#FFE2D6] hover:text-[#413329] border-2 border-[#413329] py-4 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg"
+                disabled={loading}
+                className={`w-full bg-[#413329] text-[#FFE2D6] hover:bg-[#FFE2D6] hover:text-[#413329] border-2 border-[#413329] py-4 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg ${
+                  loading ? "opacity-70 cursor-not-allowed" : ""
+                }`}
               >
-                {isLogin ? 'Sign In' : 'Create Account'}
+                {loading ? "Processing..." : isLogin ? 'Sign In' : 'Create Account'}
               </button>
 
               {/* Forgot Password - Only for Login */}
@@ -179,7 +306,10 @@ const Auth = () => {
               <p className="text-[#413329]/70 text-sm">
                 {isLogin ? "Don't have an account? " : "Already have an account? "}
                 <button
-                  onClick={() => setIsLogin(!isLogin)}
+                  onClick={() => {
+                    setIsLogin(!isLogin);
+                    setError("");
+                  }}
                   className="text-[#413329] font-semibold hover:underline transition-all duration-300"
                 >
                   {isLogin ? 'Sign Up' : 'Sign In'}
