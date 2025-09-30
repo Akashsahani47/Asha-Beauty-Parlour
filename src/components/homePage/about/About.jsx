@@ -41,7 +41,7 @@ const imageVariants = {
 
 const About = () => {
   return (
-    <div  className='bg-[#413329] py-12 md:py-20 px-4 sm:px-6 lg:px-8'>
+    <div   className='bg-[#413329] py-12 md:py-20 px-4 sm:px-6 lg:px-8'>
       <motion.div 
         className='max-w-7xl mx-auto border-2 border-[#FFE2D6] rounded-3xl p-6 sm:p-8 md:p-12 lg:p-16 bg-[#413329]/90 relative'
         initial="hidden"
@@ -51,7 +51,7 @@ const About = () => {
       >
         
         {/* Section Header */}
-        <motion.div className='text-center mb-8 md:mb-12' variants={itemVariants}>
+        <motion.div id="about" className='text-center mb-8 md:mb-12' variants={itemVariants}>
           <h1 className='text-3xl sm:text-4xl md:text-5xl font-bold text-[#FFE2D6] mb-3 md:mb-4'>About Us</h1>
           <motion.div 
             className='w-16 md:w-20 h-1 bg-[#FFE2D6] mx-auto'

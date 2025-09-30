@@ -62,14 +62,14 @@ const ContactUs = () => {
         ))}
       </div>
 
-      <div className="max-w-6xl mx-auto relative z-10">
+      <div id='contactus'  className="max-w-6xl mx-auto relative z-10">
         
         {/* Mobile Design - Enhanced Animated Cards */}
         <div className="md:hidden">
           {/* Animated Header with decorative elements */}
           <div className={`text-center mb-10 transform transition-all duration-1000 ease-out ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
             <div className="inline-block relative mb-4">
-              <div className="absolute -inset-3 bg-[#413329]/10 rounded-full blur-md"></div>
+              <div  className="absolute -inset-3 bg-[#413329]/10 rounded-full blur-md"></div>
               <h1 className="text-4xl font-bold relative z-10 bg-gradient-to-r from-[#413329] to-[#8B5A2B] bg-clip-text text-transparent">
                 Contact Us
               </h1>
