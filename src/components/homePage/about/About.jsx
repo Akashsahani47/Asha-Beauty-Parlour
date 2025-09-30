@@ -41,7 +41,7 @@ const imageVariants = {
 
 const About = () => {
   return (
-    <div className='bg-[#413329] py-12 md:py-20 px-4 sm:px-6 lg:px-8'>
+    <div id='homepageabout' className='bg-[#413329] py-12 md:py-20 px-4 sm:px-6 lg:px-8'>
       <motion.div 
         className='max-w-7xl mx-auto border-2 border-[#FFE2D6] rounded-3xl p-6 sm:p-8 md:p-12 lg:p-16 bg-[#413329]/90 relative'
         initial="hidden"

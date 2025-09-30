@@ -50,8 +50,8 @@ const Auth = () => {
             phoneNo: formData.phone
           };
 
-      console.log('🔐 Sending login request to:', url);
-      console.log('📤 Request data:', requestData);
+      // console.log('🔐 Sending login request to:', url);
+      // console.log('📤 Request data:', requestData);
 
       const loadingToast = toast.loading(isLogin ? 'Signing in...' : 'Creating account...');
 
@@ -64,7 +64,7 @@ const Auth = () => {
       });
 
       const data = await response.json();
-      console.log('📥 Login response:', data);
+      // console.log('📥 Login response:', data);
 
       if (!response.ok) {
         toast.dismiss(loadingToast);

@@ -13,7 +13,7 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }) => {
-  const { user, token, isAuthenticated, setUser, login, logout } = useUserStore();
+  const { user, token, isAuthenticated, setUser, setToken, login, logout } = useUserStore();
 
   const checkAuthStatus = async () => {
     try {
@@ -30,7 +30,6 @@ export const AuthProvider = ({ children }) => {
 
       const timestamp = Date.now();
       
-      // ✅✅✅ USE FULL BACKEND URL - THIS IS THE FIX
       const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000';
       const url = `${backendUrl}/api/user/me?t=${timestamp}`;
       
@@ -47,7 +46,6 @@ export const AuthProvider = ({ children }) => {
 
       console.log('📡 Auth check response status:', response.status);
       
-      // Check if response is JSON
       const contentType = response.headers.get('content-type');
       if (!contentType || !contentType.includes('application/json')) {
         const text = await response.text();
@@ -59,16 +57,19 @@ export const AuthProvider = ({ children }) => {
       console.log('📊 Auth check response data:', data);
       
       if (response.ok && data.user) {
+        // ✅ FIX: Set both user AND token in Zustand store
         setUser(data.user);
+        setToken(storedToken); // ← THIS IS THE CRITICAL MISSING LINE
         console.log('✅ User authenticated:', data.user.name);
+        console.log('✅ Token stored in Zustand:', storedToken ? 'YES' : 'NO');
       } else {
         console.log('❌ Auth failed. Message:', data.message);
         localStorage.removeItem('authToken');
         sessionStorage.removeItem('authToken');
-        setUser(null);
+        logout();
       }
     } catch (error) {
-      //console.error('💥 Auth check failed:', error.message);
+      console.error('💥 Auth check failed:', error.message);
       logout();
     }
   };
@@ -82,20 +83,21 @@ export const AuthProvider = ({ children }) => {
     token,
     isAuthenticated,
     login: (userData, authToken) => {
-      //console.log('🔐 Login called with user:', userData?.name);
+      console.log('🔐 Login called with user:', userData?.name);
       
       if (authToken) {
         localStorage.setItem("authToken", authToken);
-        //console.log('💾 Token saved to localStorage');
+        console.log('💾 Token saved to localStorage');
       }
       
-      setUser(userData);
+      // ✅ FIX: Use Zustand's login function which sets both user and token
+      login(userData, authToken);
     },
     logout: () => {
       console.log('🚪 Logout called');
       localStorage.removeItem("authToken");
       sessionStorage.removeItem("authToken");
-      setUser(null);
+      logout();
     },
     checkAuthStatus,
   };
