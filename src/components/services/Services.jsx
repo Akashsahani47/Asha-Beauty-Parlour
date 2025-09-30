@@ -1,7 +1,7 @@
 'use client'
 import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import useUserStore from '@/store/useStore'
 import toast, { Toaster } from 'react-hot-toast';
 
@@ -10,6 +10,8 @@ const Services = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [filter, setFilter] = useState("All")
+  const [selectedService, setSelectedService] = useState(null)
+  const [hoveredCard, setHoveredCard] = useState(null)
 
   const { token } = useUserStore()
 
@@ -17,18 +19,16 @@ const Services = () => {
     const fetchServices = async () => {
       try {
         setLoading(true)
-        setError(null) // ✅ Clear any previous errors
+        setError(null)
         
         const headers = {
           'Content-Type': 'application/json',
         }
         
-        // Add Authorization header if token exists
         if (token) {
           headers['Authorization'] = `Bearer ${token}`
         }
 
-        // Show loading toast
         const loadingToast = toast.loading('Loading services...', {
           duration: 3000,
         })
@@ -40,7 +40,6 @@ const Services = () => {
           }
         )
 
-        // Dismiss loading toast
         toast.dismiss(loadingToast)
 
         if (!response.ok) {
@@ -60,7 +59,6 @@ const Services = () => {
         const data = await response.json()
         console.log("📦 All services data:", data)
         
-        // Handle different response structures
         let servicesData = data.services || data
         
         if (data.success && data.data) {
@@ -73,7 +71,6 @@ const Services = () => {
           
         setServices(activeServices)
 
-        // Show success toast
         if (activeServices.length > 0) {
           toast.success(`Loaded ${activeServices.length} services successfully!`, {
             duration: 3000,
@@ -89,28 +86,20 @@ const Services = () => {
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load services')
         console.error('❌ Error fetching services:', err)
-        
-        // Error toast is already shown in the if block above
       } finally {
         setLoading(false)
       }
     }
       
-    // Only fetch if we have a token or after a short delay for initial load
-    
-      fetchServices()
-   
-  }, [token]) // ✅ Only depend on token
+    fetchServices()
+  }, [token])
 
-  // Filter services by category
   const filteredServices = filter === "All" 
     ? services 
     : services.filter(service => service.category === filter)
 
-  // Get unique categories for filter
   const categories = ["All", ...new Set(services.map(service => service.category))]
 
-  // Format duration from minutes to readable format
   const formatDuration = (minutes) => {
     if (!minutes) return 'Flexible'
     
@@ -123,60 +112,85 @@ const Services = () => {
     }
   }
 
-  // Format price
   const formatPrice = (price) => {
     if (!price) return 'Contact for price'
     
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'INR',
     }).format(price)
   }
 
-  // Animation variants
-  const itemVariants = {
-    hidden: (index) => ({
-      opacity: 0,
-      x: index % 2 === 0 ? -50 : 50,
-    }),
+  // New animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      x: 0,
       transition: {
-        duration: 0.8,
-        ease: "easeOut"
+        staggerChildren: 0.2
       }
     }
   }
 
-  // Function to get appropriate icon based on service category
+  const cardVariants = {
+    hidden: { 
+      opacity: 0,
+      scale: 0.8,
+      rotateY: -15
+    },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      rotateY: 0,
+      transition: {
+        duration: 0.6,
+        ease: "easeOut"
+      }
+    },
+    hover: {
+      scale: 1.05,
+      rotateY: 5,
+      transition: {
+        duration: 0.3
+      }
+    }
+  }
+
+  const filterVariants = {
+    hidden: { opacity: 0, y: -20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.5
+      }
+    }
+  }
+
   const getServiceIcon = (service) => {
-    // If service has an image URL, use it
     if (service.image) {
       return (
         <img
           src={service.image}
           alt={service.name}
-          width={40}
-          height={40}
+          width={48}
+          height={48}
           className='object-contain'
           onError={(e) => {
-            // Fallback if image fails to load
             e.target.style.display = 'none'
           }}
         />
       )
     }
 
-    // Fallback to category-based icons
     switch (service.category) {
       case "Hair":
         return (
           <Image
             src="/haircut.png"
             alt="Hair Services"
-            width={40}
-            height={40}
+            width={48}
+            height={48}
             className='object-contain'
           />
         )
@@ -185,8 +199,8 @@ const Services = () => {
           <Image
             src="/facialmassage.png"
             alt="Skin Treatments"
-            width={40}
-            height={40}
+            width={48}
+            height={48}
             className='object-contain'
           />
         )
@@ -195,8 +209,8 @@ const Services = () => {
           <Image
             src="/makeup.png"
             alt="Makeup Services"
-            width={40}
-            height={40}
+            width={48}
+            height={48}
             className='object-contain'
           />
         )
@@ -205,8 +219,8 @@ const Services = () => {
           <Image
             src="/eyebrows.png"
             alt="Nail Services"
-            width={40}
-            height={40}
+            width={48}
+            height={48}
             className='object-contain'
           />
         )
@@ -215,24 +229,14 @@ const Services = () => {
           <Image
             src="/makeup.png"
             alt="Service"
-            width={40}
-            height={40}
+            width={48}
+            height={48}
             className='object-contain'
           />
         )
     }
   }
 
-  // Retry fetching services
-  const retryFetch = () => {
-    setError(null)
-    setLoading(true)
-    toast.loading('Retrying to load services...', {
-      duration: 2000,
-    })
-  }
-
-  // Handle filter change with toast
   const handleFilterChange = (category) => {
     setFilter(category)
     if (category !== "All") {
@@ -240,44 +244,49 @@ const Services = () => {
         duration: 2000,
         icon: '🔍',
       })
-    } else {
-      toast.success('Showing all services', {
-        duration: 2000,
-        icon: '📋',
-      })
     }
   }
 
-  // Handle book appointment
-  const handleBookAppointment = () => {
+  const handleBookAppointment = (service = null) => {
     toast.loading('Redirecting to booking...', {
       duration: 1500,
     })
     
     setTimeout(() => {
-      // You can replace this with your actual booking logic
-      toast.success('Ready to book your appointment!', {
+      toast.success(service ? `Booking ${service.name}` : 'Ready to book your appointment!', {
         duration: 3000,
         icon: '📅',
       })
-      // window.location.href = '/booking' // Uncomment when you have booking page
     }, 1500)
   }
 
-  // Handle service click
-  const handleServiceClick = (serviceName) => {
-    toast(`Viewing ${serviceName} details`, {
+  const handleServiceClick = (service) => {
+    setSelectedService(service)
+    toast(`Viewing ${service.name} details`, {
       duration: 2000,
       icon: '👀',
     })
   }
 
-  // ✅ Check if we should show success content (services loaded and no error)
-  const shouldShowSuccess = services.length > 0 && !loading && !error
+  // Gradient backgrounds for different categories
+  const getCategoryGradient = (category) => {
+    switch (category) {
+      case "Hair":
+        return 'from-purple-500/10 to-pink-500/10'
+      case "Skin":
+        return 'from-blue-500/10 to-cyan-500/10'
+      case "Makeup":
+        return 'from-rose-500/10 to-red-500/10'
+      case "Nails":
+        return 'from-emerald-500/10 to-green-500/10'
+      default:
+        return 'from-orange-500/10 to-amber-500/10'
+    }
+  }
 
   if (loading) {
     return (
-      <div className='bg-[#FFE2D6] min-h-screen py-16 px-4 sm:px-6 lg:px-8'>
+      <div className='min-h-screen bg-gradient-to-br from-[#FFE2D6] via-[#FFF5F0] to-[#FFE2D6] py-16 px-4 sm:px-6 lg:px-8'>
         <Toaster 
           position="top-right"
           toastOptions={{
@@ -287,49 +296,42 @@ const Services = () => {
               color: '#FFE2D6',
               border: '1px solid #413329',
             },
-            success: {
-              style: {
-                background: '#4ade80',
-                color: '#1a1a1a',
-              },
-            },
-            error: {
-              style: {
-                background: '#ef4444',
-                color: '#fff',
-              },
-            },
-            loading: {
-              style: {
-                background: '#f59e0b',
-                color: '#1a1a1a',
-              },
-            },
           }}
         />
         <div className='max-w-7xl mx-auto'>
           <div className='text-center mb-16'>
-            <div className='inline-block relative'>
-              <h1 className='text-4xl md:text-5xl font-bold text-[#413329] mb-4 relative z-10'>OUR SERVICES</h1>
-              <div className='absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-32 h-3 bg-[#413329]/20 z-0'></div>
-            </div>
-            <p className='text-lg text-[#413329]/80 max-w-2xl mx-auto mt-6'>
-              {token ? 'Loading our premium services...' : 'Checking authentication...'}
-            </p>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5 }}
+              className='inline-block relative'
+            >
+              <h1 className='text-4xl md:text-6xl font-bold bg-gradient-to-r from-[#413329] to-[#8B7355] bg-clip-text text-transparent mb-6'>
+                OUR SERVICES
+              </h1>
+              <div className='absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-48 h-2 bg-gradient-to-r from-[#413329] to-[#8B7355] rounded-full blur-sm'></div>
+            </motion.div>
           </div>
-          <div className='grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12'>
-            {[1, 2, 3, 4].map((item) => (
-              <div key={item} className='bg-white rounded-2xl shadow-lg p-8 animate-pulse'>
-                <div className='flex flex-col md:flex-row items-center'>
-                  <div className='w-20 h-20 bg-gray-300 rounded-full mb-4 md:mb-0 md:mr-6'></div>
-                  <div className='flex-1 space-y-3'>
-                    <div className='h-6 bg-gray-300 rounded w-3/4'></div>
-                    <div className='h-4 bg-gray-300 rounded w-12'></div>
-                    <div className='h-4 bg-gray-300 rounded w-full'></div>
-                    <div className='h-4 bg-gray-300 rounded w-5/6'></div>
+          
+          <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8'>
+            {[1, 2, 3, 4, 5, 6].map((item) => (
+              <motion.div
+                key={item}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: item * 0.1 }}
+                className='bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl p-8 border border-white/20'
+              >
+                <div className='animate-pulse'>
+                  <div className='w-20 h-20 bg-gray-300 rounded-2xl mx-auto mb-6'></div>
+                  <div className='space-y-3'>
+                    <div className='h-6 bg-gray-300 rounded-full w-3/4 mx-auto'></div>
+                    <div className='h-4 bg-gray-300 rounded-full w-1/2 mx-auto'></div>
+                    <div className='h-4 bg-gray-300 rounded-full w-full'></div>
+                    <div className='h-4 bg-gray-300 rounded-full w-5/6'></div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -338,230 +340,306 @@ const Services = () => {
   }
 
   if (error && services.length === 0) {
-  return (
-    <div className='bg-[#FFE2D6] min-h-screen py-16 px-4 sm:px-6 lg:px-8'>
-      <Toaster 
-        position="top-right"
-        toastOptions={{
-          duration: 4000,
-          style: {
-            background: '#413329',
-            color: '#FFE2D6',
-            border: '1px solid #413329',
-          },
-        }}
-      />
-      <div className='max-w-7xl mx-auto text-center'>
-        <div className='inline-block relative mb-8'>
-          <h1 className='text-4xl md:text-5xl font-bold text-[#413329] mb-4 relative z-10'>OUR SERVICES</h1>
-          <div className='absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-32 h-3 bg-[#413329]/20 z-0'></div>
-        </div>
-        <div className='bg-white rounded-2xl shadow-lg p-8 max-w-md mx-auto'>
-          <div className='text-red-600 mb-4'>
-            <svg className="w-16 h-16 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
-            </svg>
-            <p className='text-[#413329] text-lg mb-2'>Authentication Required</p>
-            <p className='text-[#413329]/70 text-sm mb-4'>Please login to access our services</p>
-          </div>
-          <div className='flex gap-4 justify-center'>
-            <button 
+    return (
+      <div className='min-h-screen bg-gradient-to-br from-[#FFE2D6] via-[#FFF5F0] to-[#FFE2D6] py-16 px-4 sm:px-6 lg:px-8'>
+        <Toaster position="top-right" />
+        <div className='max-w-7xl mx-auto text-center'>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            className='inline-block relative mb-8'
+          >
+            <h1 className='text-4xl md:text-6xl font-bold bg-gradient-to-r from-[#413329] to-[#8B7355] bg-clip-text text-transparent mb-6'>
+              OUR SERVICES
+            </h1>
+          </motion.div>
+          
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className='bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl p-12 max-w-md mx-auto border border-white/20'
+          >
+            <div className='text-red-600 mb-6'>
+              <motion.div
+                animate={{ 
+                  scale: [1, 1.1, 1],
+                  rotate: [0, -5, 5, 0]
+                }}
+                transition={{ duration: 2, repeat: Infinity }}
+              >
+                <svg className="w-20 h-20 mx-auto mb-6" fill="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                </svg>
+              </motion.div>
+              <p className='text-2xl font-bold text-[#413329] mb-4'>Access Required</p>
+              <p className='text-[#413329]/70 mb-8'>Please login to explore our premium services</p>
+            </div>
+            <motion.button 
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               onClick={() => {
                 toast.loading('Redirecting to login...', { duration: 1000 })
                 setTimeout(() => window.location.href = '/login', 1000)
               }}
-              className='bg-[#FF6B6B] text-white px-6 py-2 rounded-full hover:bg-[#FF8E8E] transition-all duration-300'
+              className='bg-gradient-to-r from-[#413329] to-[#8B7355] text-white px-8 py-4 rounded-2xl font-semibold hover:shadow-2xl transition-all duration-300 w-full'
             >
               Login to Continue
-            </button>
-          </div>
+            </motion.button>
+          </motion.div>
         </div>
       </div>
-    </div>
-  )
-}
+    )
+  }
 
-  // ✅ Show success content when services are loaded
   return (
-    <div className='bg-[#FFE2D6] min-h-screen py-16 px-4 sm:px-6 lg:px-8 overflow-hidden'>
-      <Toaster 
-        position="top-right"
-        toastOptions={{
-          duration: 4000,
-          style: {
-            background: '#413329',
-            color: '#FFE2D6',
-            border: '1px solid #413329',
-          },
-          success: {
-            style: {
-              background: '#4ade80',
-              color: '#1a1a1a',
-            },
-          },
-          error: {
-            style: {
-              background: '#ef4444',
-              color: '#fff',
-            },
-          },
-          loading: {
-            style: {
-              background: '#f59e0b',
-              color: '#1a1a1a',
-            },
-          },
-        }}
-      />
-      <div className='max-w-7xl mx-auto'>
+    <div className='min-h-screen bg-gradient-to-br from-[#FFE2D6] via-[#FFF5F0] to-[#FFE2D6] py-16 px-4 sm:px-6 lg:px-8 overflow-hidden'>
+      <Toaster position="top-right" />
+      
+      {/* Animated Background Elements */}
+      <div className='fixed inset-0 overflow-hidden pointer-events-none'>
+        <div className='absolute -top-40 -right-40 w-80 h-80 bg-[#413329]/5 rounded-full blur-3xl'></div>
+        <div className='absolute -bottom-40 -left-40 w-80 h-80 bg-[#8B7355]/5 rounded-full blur-3xl'></div>
+      </div>
+
+      <div className='max-w-7xl mx-auto relative z-10'>
         {/* Section Header */}
         <motion.div 
-          className='text-center mb-12'
-          initial={{ opacity: 0, y: 20 }}
+          className='text-center mb-16'
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true, margin: "0px" }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
         >
-          <div className='inline-block relative'>
-            <h1 className='text-4xl md:text-5xl font-bold text-[#413329] mb-4 relative z-10'>OUR SERVICES</h1>
-            <div className='absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-32 h-3 bg-[#413329]/20 z-0'></div>
-          </div>
-          <p className='text-lg text-[#413329]/80 max-w-2xl mx-auto mt-6'>
-            Discover our comprehensive range of premium beauty services designed to enhance your natural radiance.
-          </p>
+          <motion.div
+            initial={{ scale: 0.5 }}
+            whileInView={{ scale: 1 }}
+            transition={{ duration: 0.5 }}
+            className='inline-block relative'
+          >
+            <h1 className='text-4xl md:text-6xl font-bold bg-gradient-to-r from-[#413329] to-[#8B7355] bg-clip-text text-transparent mb-6'>
+              PREMIUM SERVICES
+            </h1>
+            <motion.div 
+              className='absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-48 h-2 bg-gradient-to-r from-[#413329] to-[#8B7355] rounded-full'
+              initial={{ width: 0 }}
+              whileInView={{ width: 192 }}
+              transition={{ delay: 0.5, duration: 0.8 }}
+            ></motion.div>
+          </motion.div>
+          
+          <motion.p 
+            className='text-lg text-[#413329]/80 max-w-2xl mx-auto mt-8'
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+          >
+            Experience luxury and transformation with our expertly crafted beauty services
+          </motion.p>
+
           {services.length > 0 && (
-            <p className='text-sm text-[#413329]/60 mt-2'>
-              {services.length} services available • {filteredServices.length} showing
-            </p>
+            <motion.p 
+              className='text-sm text-[#413329]/60 mt-4'
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ delay: 0.5 }}
+            >
+              {services.length} premium services • {filteredServices.length} currently showing
+            </motion.p>
           )}
         </motion.div>
 
-        {/* Category Filter */}
+        {/* Animated Filter Tabs */}
         {services.length > 0 && categories.length > 1 && (
           <motion.div 
-            className='flex flex-wrap justify-center gap-3 mb-12'
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            viewport={{ once: true, margin: "0px" }}
+            className='flex flex-wrap justify-center gap-4 mb-16'
+            variants={filterVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
           >
-            {categories.map((category) => (
-              <button
+            {categories.map((category, index) => (
+              <motion.button
                 key={category}
                 onClick={() => handleFilterChange(category)}
-                className={`px-4 py-2 rounded-full font-medium transition-all duration-300 ${
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                className={`px-6 py-3 rounded-2xl font-semibold transition-all duration-300 backdrop-blur-sm border ${
                   filter === category
-                    ? 'bg-[#413329] text-[#FFE2D6] shadow-lg'
-                    : 'bg-white text-[#413329] hover:bg-[#413329] hover:text-[#FFE2D6]'
-                } border border-[#413329]/20`}
+                    ? 'bg-gradient-to-r from-[#413329] to-[#8B7355] text-white shadow-2xl border-transparent'
+                    : 'bg-white/80 text-[#413329] hover:bg-white border-white/30 hover:shadow-lg'
+                }`}
               >
                 {category}
-              </button>
+              </motion.button>
             ))}
           </motion.div>
         )}
 
-        {/* Services List */}
+        {/* Services Grid */}
         {services.length === 0 && !loading ? (
-          <div className='text-center py-12'>
-            <div className='bg-white rounded-2xl shadow-lg p-8 max-w-md mx-auto'>
-              <svg className="w-16 h-16 mx-auto mb-4 text-[#413329]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
-              </svg>
-              <p className='text-[#413329] text-lg mb-2'>No services available</p>
-              <p className='text-[#413329]/60'>Please check back later for updates</p>
-            </div>
-          </div>
-        ) : filteredServices.length === 0 ? (
-          <div className='text-center py-12'>
-            <div className='bg-white rounded-2xl shadow-lg p-8 max-w-md mx-auto'>
-              <p className='text-[#413329] text-lg mb-4'>No services found in {filter} category</p>
-              <button 
-                onClick={() => handleFilterChange("All")}
-                className='bg-[#413329] text-[#FFE2D6] px-6 py-2 rounded-full hover:bg-[#FFE2D6] hover:text-[#413329] border-2 border-[#413329] transition-all duration-300'
+          <motion.div 
+            className='text-center py-20'
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+          >
+            <div className='bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl p-12 max-w-md mx-auto border border-white/20'>
+              <motion.div
+                animate={{ 
+                  rotate: [0, 10, -10, 0],
+                  scale: [1, 1.1, 1]
+                }}
+                transition={{ duration: 2, repeat: Infinity }}
               >
-                Show All Services
-              </button>
-            </div>
-          </div>
-        ) : (
-          <div className='grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 mb-16 overflow-visible'>
-            {filteredServices.map((service, index) => (
-              <motion.div 
-                key={service._id} 
-                className='group relative overflow-hidden bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-500 transform hover:-translate-y-2 cursor-pointer'
-                custom={index}
-                variants={itemVariants}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, margin: "0px" }}
-                onClick={() => handleServiceClick(service.name)}
-              >
-                {/* Background Pattern */}
-                <div className='absolute top-0 right-0 w-24 h-24 md:w-32 md:h-32 bg-[#413329]/5 rounded-bl-full z-0'></div>
-                
-                <div className='relative flex flex-col md:flex-row items-center p-6 md:p-8 z-10'>
-                  {/* Service Image/Icon */}
-                  <div className='w-20 h-20 md:w-24 md:h-24 bg-[#FFE2D6] rounded-full flex items-center justify-center mb-4 md:mb-0 md:mr-6 group-hover:scale-110 transition-transform duration-300 flex-shrink-0'>
-                    {getServiceIcon(service)}
-                  </div>
-                  
-                  {/* Service Content */}
-                  <div className='flex-1 text-center md:text-left'>
-                    <div className='flex flex-col md:flex-row md:items-center md:justify-between mb-2'>
-                      <h2 className='text-xl md:text-2xl font-bold text-[#413329]'>{service.name}</h2>
-                      <span className='text-lg font-semibold text-[#413329] mt-1 md:mt-0'>
-                        {formatPrice(service.price)}
-                      </span>
-                    </div>
-                    
-                    <div className='w-12 h-1 bg-[#413329] mb-3 mx-auto md:mx-0'></div>
-                    
-                    <p className='text-[#413329]/80 text-sm md:text-base mb-4'>
-                      {service.description}
-                    </p>
-                    
-                    {/* Service Metadata */}
-                    <div className='flex flex-wrap gap-4 justify-center md:justify-start text-sm text-[#413329]/70'>
-                      <span className='flex items-center bg-[#FFE2D6] px-3 py-1 rounded-full'>
-                        <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
-                        </svg>
-                        {formatDuration(service.duration)}
-                      </span>
-                      
-                      <span className='flex items-center bg-[#FFE2D6] px-3 py-1 rounded-full'>
-                        <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                          <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-                        </svg>
-                        {service.category || 'General'}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Hover Effect Border */}
-                <div className='absolute inset-0 rounded-2xl border-2 border-transparent group-hover:border-[#413329]/20 transition-all duration-300 pointer-events-none'></div>
+                <svg className="w-20 h-20 mx-auto mb-6 text-[#413329]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                </svg>
               </motion.div>
-            ))}
-          </div>
+              <p className='text-2xl font-bold text-[#413329] mb-4'>Coming Soon</p>
+              <p className='text-[#413329]/60 mb-6'>We're preparing something extraordinary for you</p>
+            </div>
+          </motion.div>
+        ) : filteredServices.length === 0 ? (
+          <motion.div 
+            className='text-center py-20'
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+          >
+            <div className='bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl p-12 max-w-md mx-auto border border-white/20'>
+              <p className='text-2xl font-bold text-[#413329] mb-4'>No {filter} Services</p>
+              <p className='text-[#413329]/60 mb-6'>Check back soon for new additions</p>
+              <motion.button 
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => handleFilterChange("All")}
+                className='bg-gradient-to-r from-[#413329] to-[#8B7355] text-white px-8 py-3 rounded-2xl font-semibold hover:shadow-xl transition-all duration-300'
+              >
+                View All Services
+              </motion.button>
+            </div>
+          </motion.div>
+        ) : (
+          <motion.div 
+            className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8 mb-20'
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+          >
+            <AnimatePresence>
+              {filteredServices.map((service, index) => (
+                <motion.div
+                  key={service._id}
+                  variants={cardVariants}
+                  initial="hidden"
+                  whileInView="visible"
+                  whileHover="hover"
+                  viewport={{ once: true }}
+                  custom={index}
+                  onMouseEnter={() => setHoveredCard(service._id)}
+                  onMouseLeave={() => setHoveredCard(null)}
+                  className='group relative cursor-pointer'
+                  onClick={() => handleServiceClick(service)}
+                >
+                  {/* Card */}
+                  <div className={`relative bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl overflow-hidden border border-white/20 transition-all duration-500 h-full ${
+                    hoveredCard === service._id ? 'shadow-2xl' : ''
+                  }`}>
+                    
+                    {/* Animated Background Gradient */}
+                    <div className={`absolute inset-0 bg-gradient-to-br ${getCategoryGradient(service.category)} opacity-0 group-hover:opacity-100 transition-opacity duration-500`}></div>
+                    
+                    {/* Shine Effect */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 transform translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
+                    
+                    <div className='relative p-8 z-10'>
+                      {/* Icon with Floating Animation */}
+                      <motion.div 
+                        className='w-20 h-20 bg-gradient-to-br from-white to-gray-50 rounded-2xl flex items-center justify-center mb-6 mx-auto shadow-lg border border-white/50'
+                        whileHover={{ 
+                          scale: 1.1,
+                          rotate: [0, -5, 5, 0] 
+                        }}
+                        transition={{ duration: 0.5 }}
+                      >
+                        {getServiceIcon(service)}
+                      </motion.div>
+
+                      {/* Service Name & Price */}
+                      <div className='text-center mb-6'>
+                        <h3 className='text-2xl font-bold text-[#413329] mb-2'>{service.name}</h3>
+                        <motion.div
+                          initial={{ scale: 0 }}
+                          whileInView={{ scale: 1 }}
+                          transition={{ delay: 0.2 }}
+                          className='inline-block bg-gradient-to-r from-[#413329] to-[#8B7355] text-white px-4 py-1 rounded-full text-sm font-semibold'
+                        >
+                          {formatPrice(service.price)}
+                        </motion.div>
+                      </div>
+
+                      {/* Description */}
+                      <p className='text-[#413329]/70 text-center mb-6 leading-relaxed'>
+                        {service.description}
+                      </p>
+
+                      {/* Metadata */}
+                      <div className='flex justify-center gap-4 mb-6'>
+                        <span className='flex items-center bg-white/50 backdrop-blur-sm px-3 py-1 rounded-full text-sm text-[#413329]/80 border border-white/30'>
+                          ⏱️ {formatDuration(service.duration)}
+                        </span>
+                        <span className='flex items-center bg-white/50 backdrop-blur-sm px-3 py-1 rounded-full text-sm text-[#413329]/80 border border-white/30'>
+                          🏷️ {service.category || 'General'}
+                        </span>
+                      </div>
+
+                      {/* Book Button */}
+                      <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleBookAppointment(service)
+                        }}
+                        className='w-full bg-gradient-to-r from-[#413329] to-[#8B7355] text-white py-3 rounded-2xl font-semibold hover:shadow-xl transition-all duration-300 border border-white/20'
+                      >
+                        Book Now
+                      </motion.button>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </motion.div>
         )}
 
-        {/* Call to Action */}
+        {/* CTA Section */}
         <motion.div 
           className='text-center'
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          viewport={{ once: true, margin: "0px" }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
         >
-          <button 
-            onClick={handleBookAppointment}
-            className='relative bg-[#413329] text-[#FFE2D6] px-8 py-3 md:px-10 md:py-4 rounded-full font-medium overflow-hidden group transition-all duration-300 hover:bg-[#FFE2D6] hover:text-[#413329] border-2 border-[#413329] hover:shadow-2xl'
-          >
-            <span className='relative z-10'>Book Appointment</span>
-            <div className='absolute inset-0 bg-[#FFE2D6] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left z-0'></div>
-          </button>
+          <div className='bg-gradient-to-r from-[#413329] to-[#8B7355] rounded-3xl p-12 text-white shadow-2xl'>
+            <h2 className='text-3xl md:text-4xl font-bold mb-4'>Ready for Transformation?</h2>
+            <p className='text-white/80 mb-8 max-w-2xl mx-auto'>
+              Book your appointment today and experience the luxury you deserve
+            </p>
+            <motion.button
+              whileHover={{ 
+                scale: 1.05,
+                boxShadow: "0 20px 40px rgba(0,0,0,0.3)"
+              }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => handleBookAppointment()}
+              className='bg-white text-[#413329] px-12 py-4 rounded-2xl font-bold text-lg hover:bg-gray-50 transition-all duration-300'
+            >
+              Book Your Session
+            </motion.button>
+          </div>
         </motion.div>
       </div>
     </div>

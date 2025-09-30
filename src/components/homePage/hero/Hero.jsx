@@ -1,8 +1,10 @@
 'use client'
 import React from "react";
 import Image from "next/image";
+import {useRouter} from "next/navigation"
 
 const Hero = () => {
+  const router = useRouter();
   return (
     <div className="relative w-full h-screen max-h-[800px] min-h-[500px] overflow-hidden bg-[#FFE2D6]">
       {/* Background Image with Overlay */}
@@ -50,7 +52,7 @@ const Hero = () => {
               </span>
             </button>
 
-            <button className="border border-[#FFE2D6]/50 hover:border-[#FFE2D6] text-[#FFE2D6] px-6 py-2 sm:px-7 sm:py-2.5 md:px-8 md:py-3 rounded-full font-medium transition-all duration-300 hover:bg-[#FFE2D6]/10 text-sm sm:text-base">
+            <button onClick={()=> router.push("/servicespage")} className="border cursor-pointer border-[#FFE2D6]/50 hover:border-[#FFE2D6] text-[#FFE2D6] px-6 py-2 sm:px-7 sm:py-2.5 md:px-8 md:py-3 rounded-full font-medium transition-all duration-300 hover:bg-[#FFE2D6]/10 text-sm sm:text-base">
               View Services
             </button>
           </div>

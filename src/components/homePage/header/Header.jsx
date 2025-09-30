@@ -149,7 +149,7 @@ const Header = () => {
             About
           </li>
           <li 
-            onClick={() => handleNavigation('/service')}
+            onClick={() => handleNavigation('/servicespage')}
             className="hover:scale-125 transform transition duration-300 cursor-pointer py-2"
           >
             Service

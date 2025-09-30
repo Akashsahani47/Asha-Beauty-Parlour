@@ -2,6 +2,9 @@
 import React from 'react'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
+import { useRouter } from "next/navigation"
+
+
 
 const Services = () => {
   const services = [
@@ -26,7 +29,10 @@ const Services = () => {
       description: "Our professional makeup artists will enhance your natural beauty for any occasion. From natural daytime looks to glamorous evening transformations."
     }
   ]
-
+const router = useRouter();
+const click  = ()=> {
+router.push("/servicespage")
+}
   // Animation variants for the service items
   const itemVariants = {
     hidden: (index) => ({
@@ -143,8 +149,8 @@ const Services = () => {
           transition={{ duration: 0.6, delay: 0.3 }}
           viewport={{ once: true, margin: "0px" }} // Added margin: 0px
         >
-          <button className='relative bg-[#413329] text-[#FFE2D6] px-8 py-3 md:px-10 md:py-4 rounded-full font-medium overflow-hidden group transition-all duration-300 hover:bg-[#FFE2D6] hover:text-[#413329] border-2 border-[#413329] hover:shadow-2xl'>
-            <span className='relative z-10'>All Services</span>
+          <button onClick={click}  className=' cursor-pointer relative bg-[#413329] text-[#FFE2D6] px-8 py-3 md:px-10 md:py-4 rounded-full font-medium overflow-hidden group transition-all duration-300 hover:bg-[#FFE2D6] hover:text-[#413329] border-2 border-[#413329] hover:shadow-2xl'>
+            <span className='relative z-10 cursor-pointer'>All Services</span>
             <div className='absolute inset-0 bg-[#FFE2D6] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left z-0'></div>
           </button>
         </motion.div>
