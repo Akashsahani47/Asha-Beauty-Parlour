@@ -4,6 +4,8 @@ import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import useUserStore from '@/store/useStore'
 import toast, { Toaster } from 'react-hot-toast';
+import {useRouter} from 'next/navigation'
+
 
 const Services = () => {
   const [services, setServices] = useState([])
@@ -12,9 +14,9 @@ const Services = () => {
   const [filter, setFilter] = useState("All")
   const [selectedService, setSelectedService] = useState(null)
   const [hoveredCard, setHoveredCard] = useState(null)
-
   const { token } = useUserStore()
-
+  
+  const router = useRouter();
   useEffect(() => {
     const fetchServices = async () => {
       try {
@@ -248,16 +250,11 @@ const Services = () => {
   }
 
   const handleBookAppointment = (service = null) => {
-    toast.loading('Redirecting to booking...', {
-      duration: 1500,
-    })
-    
-    setTimeout(() => {
-      toast.success(service ? `Booking ${service.name}` : 'Ready to book your appointment!', {
-        duration: 3000,
-        icon: '📅',
-      })
-    }, 1500)
+      toast.loading(`Redirecting to booking for ${service.name}...`, {
+    duration: 1500,
+  });
+
+    router.push(`/bookingpage/${service._id}`)
   }
 
   const handleServiceClick = (service) => {
@@ -603,7 +600,7 @@ const Services = () => {
                           e.stopPropagation()
                           handleBookAppointment(service)
                         }}
-                        className='w-full bg-gradient-to-r from-[#413329] to-[#8B7355] text-white py-3 rounded-2xl font-semibold hover:shadow-xl transition-all duration-300 border border-white/20'
+                        className= ' cursor-pointer w-full bg-gradient-to-r from-[#413329] to-[#8B7355] text-white py-3 rounded-2xl font-semibold hover:shadow-xl transition-all duration-300 border border-white/20'
                       >
                         Book Now
                       </motion.button>
