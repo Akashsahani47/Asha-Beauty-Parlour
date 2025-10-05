@@ -20,6 +20,7 @@ const BookingPage = () => {
   const [submitting, setSubmitting] = useState(false)
   const [currentMonth, setCurrentMonth] = useState(new Date())
   const [activeTab, setActiveTab] = useState('details')
+  const [showPaymentModal, setShowPaymentModal] = useState(false)
 
   // Animation variants
   const containerVariants = {
@@ -238,7 +239,7 @@ const BookingPage = () => {
     }
   }
 
-  const handleBooking = async () => {
+  const handleMakePayment = () => {
     if (!selectedDate || !selectedTime || !userPhone) {
       toast.error('Please fill all required fields')
       return
@@ -249,6 +250,10 @@ const BookingPage = () => {
       return
     }
 
+    setShowPaymentModal(true)
+  }
+
+  const createBooking = async (paymentMethod, paymentStatus = 'pending') => {
     try {
       setSubmitting(true)
 
@@ -257,7 +262,10 @@ const BookingPage = () => {
         userPhone,
         startTime: new Date(selectedDate.setHours(selectedTime.hour, 0, 0, 0)),
         endTime: new Date(selectedDate.setHours(selectedTime.hour + 1, 0, 0, 0)),
-        date: selectedDate
+        date: selectedDate,
+        paymentMethod: paymentMethod,
+        paymentStatus: paymentStatus,
+        status: 'confirmed'
       }
 
       const headers = {
@@ -265,7 +273,7 @@ const BookingPage = () => {
         'Authorization': `Bearer ${token}`
       }
 
-      const bookingToast = toast.loading('Booking your appointment...')
+      const bookingToast = toast.loading('Creating your booking...')
 
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/booking/newBooking`,
@@ -285,20 +293,120 @@ const BookingPage = () => {
 
       const result = await response.json()
 
-      toast.success('Redirecting to Payment Page', {
-        duration: 5000,
-      })
-
-      setTimeout(() => {
-        //router.push('/appointments')
-      }, 2000)
+      if (result.success) {
+  toast.success('🎉 Your booking has been confirmed!')
+  toast.success('📧 A confirmation email has been sent to your inbox.')
+  
+  setTimeout(() => {
+    router.push('/')
+  }, 2500)
+}
 
     } catch (error) {
       console.error('Booking error:', error)
-      toast.error(error.message || 'Failed to book appointment')
+      toast.error(error.message || 'Failed to create booking')
     } finally {
       setSubmitting(false)
+      setShowPaymentModal(false)
     }
+  }
+
+  const handlePayAfterService = async () => {
+    await createBooking('pay_after_service', 'pending')
+  }
+
+  const handleOnlinePayment = async () => {
+    try {
+      // First create Razorpay order
+      const orderResponse = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/booking/payments/create-order`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            amount: service.price * 100, // Convert to paise
+            currency: 'INR',
+            service: service.name
+          })
+        }
+      )
+
+      if (!orderResponse.ok) {
+        throw new Error('Failed to create payment order')
+      }
+
+      const orderData = await orderResponse.json()
+
+      // Load Razorpay script
+      const script = document.createElement('script')
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js'
+      script.onload = () => {
+        openRazorpayCheckout(orderData.order)
+      }
+      document.body.appendChild(script)
+
+    } catch (error) {
+      console.error('Payment initiation error:', error)
+      toast.error('Failed to initiate payment')
+    }
+  }
+
+  const openRazorpayCheckout = (order) => {
+    const options = {
+      key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+      amount: order.amount,
+      currency: order.currency,
+      name: 'Asha Beauty Parlour',
+      description: `Payment for ${service.name}`,
+      order_id: order.id,
+      handler: async function (response) {
+        // Payment successful - now create booking
+        toast.success('Payment successful! Creating your booking...')
+        
+        // Verify payment on backend
+        const verifyResponse = await fetch(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/booking/payments/verify-payment`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature
+            })
+          }
+        )
+
+        if (verifyResponse.ok) {
+          await createBooking('razorpay', 'paid')
+        } else {
+          toast.error('Payment verification failed')
+        }
+      },
+      prefill: {
+        name: user?.name || '',
+        email: user?.email || '',
+        contact: userPhone
+      },
+      theme: {
+        color: '#2A2118'
+      },
+      modal: {
+        ondismiss: function() {
+          toast.error('Payment cancelled')
+          setSubmitting(false)
+        }
+      }
+    };
+
+    const razorpay = new window.Razorpay(options)
+    razorpay.open()
   }
 
   const getServiceIcon = (serviceCategory) => {
@@ -388,7 +496,7 @@ const BookingPage = () => {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={() => router.push('/services')}
+                onClick={() => router.push('/servicespage')}
                 className='bg-gradient-to-r from-[#2A2118] to-[#5D4C38] text-white px-8 py-3 rounded-2xl font-semibold block w-full'
               >
                 Back to Services
@@ -455,7 +563,7 @@ const BookingPage = () => {
             className='inline-block relative'
           >
             <h1 className='text-4xl md:text-6xl font-bold bg-gradient-to-r from-[#2A2118] to-[#5D4C38] bg-clip-text text-transparent mb-6'>
-              Book Appointment
+              Book Service
             </h1>
             <motion.div 
               className='absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-64 h-1 bg-gradient-to-r from-[#2A2118] to-[#5D4C38] rounded-full opacity-50'
@@ -815,6 +923,162 @@ const BookingPage = () => {
               )}
             </AnimatePresence>
 
+            {/* Enhanced Payment Modal */}
+<AnimatePresence>
+  {showPaymentModal && (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 bg-black/60 backdrop-blur-lg flex items-center justify-center z-50 p-4"
+    >
+      {/* Backdrop click to close */}
+      <div 
+        className="absolute inset-0" 
+        onClick={() => !submitting && setShowPaymentModal(false)}
+      />
+      
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0, y: 20 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
+        exit={{ scale: 0.9, opacity: 0, y: 20 }}
+        transition={{ type: "spring", damping: 25, stiffness: 300 }}
+        className="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full relative border border-white/20"
+        style={{
+          background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
+        }}
+      >
+        {/* Header */}
+        <div className="text-center mb-8">
+          <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+            <span className="text-2xl">💎</span>
+          </div>
+          <h3 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent mb-2">
+            Complete Your Booking
+          </h3>
+          <p className="text-gray-500 text-sm">
+            Choose your preferred payment method
+          </p>
+        </div>
+
+        {/* Payment Options */}
+        <div className="space-y-4 mb-8">
+          {/* Pay After Service */}
+          <motion.button
+            onClick={handlePayAfterService}
+            disabled={submitting}
+            whileHover={!submitting ? { 
+              scale: 1.02, 
+              y: -2,
+              transition: { type: "spring", stiffness: 400, damping: 17 }
+            } : {}}
+            whileTap={!submitting ? { scale: 0.98 } : {}}
+            className={`w-full p-5 rounded-2xl border-2 transition-all duration-300 text-left relative overflow-hidden group ${
+              submitting 
+                ? 'opacity-50 cursor-not-allowed border-gray-200' 
+                : 'border-emerald-100 hover:border-emerald-300 hover:shadow-lg'
+            }`}
+            style={{
+              background: 'linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%)'
+            }}
+          >
+            {/* Animated background effect */}
+            <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/0 via-emerald-400/5 to-emerald-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
+            
+            <div className="flex items-center gap-4 relative z-10">
+              <div className="w-14 h-14 bg-gradient-to-br from-emerald-500 to-green-600 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-emerald-500/25">
+                ⏰
+              </div>
+              <div className="flex-1">
+                <div className="font-semibold text-gray-900 text-lg">Pay Later</div>
+                <div className="text-sm text-gray-600">Pay at the salon when you visit</div>
+              </div>
+              <div className="w-2 h-2 bg-emerald-500 rounded-full group-hover:scale-150 transition-transform duration-300" />
+            </div>
+          </motion.button>
+
+          {/* Online Payment */}
+          <motion.button
+            onClick={handleOnlinePayment}
+            disabled={submitting}
+            whileHover={!submitting ? { 
+              scale: 1.02, 
+              y: -2,
+              transition: { type: "spring", stiffness: 400, damping: 17 }
+            } : {}}
+            whileTap={!submitting ? { scale: 0.98 } : {}}
+            className={`w-full p-5 rounded-2xl border-2 transition-all duration-300 text-left relative overflow-hidden group ${
+              submitting 
+                ? 'opacity-50 cursor-not-allowed border-gray-200' 
+                : 'border-blue-100 hover:border-blue-300 hover:shadow-lg'
+            }`}
+            style={{
+              background: 'linear-gradient(135deg, #f0f9ff 0%, #eff6ff 100%)'
+            }}
+          >
+            {/* Animated background effect */}
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 via-blue-400/5 to-blue-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
+            
+            <div className="flex items-center gap-4 relative z-10">
+              <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-blue-500/25">
+                🔒
+              </div>
+              <div className="flex-1">
+                <div className="font-semibold text-gray-900 text-lg">Pay Now</div>
+                <div className="text-sm text-gray-600">Secure payment via Razorpay</div>
+              </div>
+              <div className="text-blue-600 font-semibold text-sm bg-blue-100 px-3 py-1 rounded-full">
+                Secure
+              </div>
+            </div>
+          </motion.button>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="space-y-3">
+          <motion.button
+            onClick={() => setShowPaymentModal(false)}
+            disabled={submitting}
+            whileHover={!submitting ? { scale: 1.02 } : {}}
+            whileTap={!submitting ? { scale: 0.98 } : {}}
+            className={`w-full py-4 rounded-2xl font-semibold transition-all duration-300 border-2 ${
+              submitting 
+                ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed' 
+                : 'bg-white text-gray-700 border-gray-200 hover:border-gray-300 hover:bg-gray-50 hover:shadow-md'
+            }`}
+          >
+            Cancel
+          </motion.button>
+        </div>
+
+        {/* Security Badge */}
+        <div className="flex items-center justify-center gap-2 mt-6 pt-6 border-t border-gray-100">
+          <div className="w-4 h-4 text-green-500">✓</div>
+          <span className="text-xs text-gray-500">100% Secure & Encrypted</span>
+        </div>
+
+        {/* Loading State */}
+        {submitting && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="absolute inset-0 bg-white/80 backdrop-blur-sm rounded-3xl flex items-center justify-center flex-col"
+          >
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+              className="w-12 h-12 border-4 border-purple-200 border-t-purple-600 rounded-full mb-4"
+            />
+            <div className="text-gray-700 font-medium">Processing your request...</div>
+            <div className="text-gray-500 text-sm mt-1">Please wait a moment</div>
+          </motion.div>
+        )}
+      </motion.div>
+    </motion.div>
+  )}
+</AnimatePresence>
+
             {/* Booking Summary Card */}
             <motion.div
               variants={cardVariants}
@@ -861,7 +1125,7 @@ const BookingPage = () => {
               </div>
 
               <motion.button
-                onClick={handleBooking}
+                onClick={handleMakePayment}
                 disabled={!selectedDate || !selectedTime || !userPhone || submitting}
                 whileHover={(!selectedDate || !selectedTime || !userPhone || submitting) ? {} : { scale: 1.02 }}
                 whileTap={(!selectedDate || !selectedTime || !userPhone || submitting) ? {} : { scale: 0.98 }}
@@ -882,10 +1146,10 @@ const BookingPage = () => {
                       animate={{ rotate: 360 }}
                       transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
                     ></motion.div>
-                    Booking...
+                    Processing...
                   </motion.div>
                 ) : (
-                  <span>Confirm Booking</span>
+                  <span>Make Payment</span>
                 )}
               </motion.button>
             </motion.div>
