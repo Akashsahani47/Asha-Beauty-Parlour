@@ -193,8 +193,8 @@ const Auth = () => {
               onClick={() => setIsLogin(true)}
               className={`flex-1 py-4 px-6 text-center font-semibold transition-all duration-300 ${
                 isLogin
-                  ? 'bg-[#FFE2D6] text-[#413329]'
-                  : 'text-[#FFE2D6] hover:bg-[#413329]/80'
+                ? 'text-[#FFE2D6] hover:bg-[#413329]/80'
+                : 'bg-[#FFE2D6] text-[#413329]'
               }`}
             >
               Login
@@ -203,8 +203,8 @@ const Auth = () => {
               onClick={() => setIsLogin(false)}
               className={`flex-1 py-4 px-6 text-center font-semibold transition-all duration-300 ${
                 !isLogin
-                  ? 'bg-[#FFE2D6] text-[#413329]'
-                  : 'text-[#FFE2D6] hover:bg-[#413329]/80'
+                  ? 'text-[#FFE2D6] hover:bg-[#413329]/80'
+                : 'bg-[#FFE2D6] text-[#413329]'
               }`}
             >
               Sign Up
