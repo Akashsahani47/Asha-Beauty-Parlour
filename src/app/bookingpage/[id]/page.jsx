@@ -263,7 +263,7 @@ const BookingPage = () => {
         console.log('🎯 Real-time slot check result:', data)
         
         if (data.success && data.available) {
-          toast.success('✅ Slot is available!')
+          toast.success('Slot is available!')
           return true
         } else {
           toast.error('❌ This slot is no longer available')
@@ -370,7 +370,7 @@ const BookingPage = () => {
         date: selectedDate,
         paymentMethod: paymentMethod,
         paymentStatus: paymentStatus,
-        status: 'confirmed',
+        status: 'pending',
         totalAmount: service.price,
         ...(razorpayDetails && {
           razorpayOrderId: razorpayDetails.razorpay_order_id,
