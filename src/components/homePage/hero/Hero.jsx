@@ -66,7 +66,7 @@ const Hero = () => {
 
       {/* Static Text Content - No fade effect */}
       <div className="absolute inset-0 flex items-center justify-center md:justify-start px-4 sm:px-6 md:px-10 lg:px-16">
-        <div className="bg-[#413329]/80 backdrop-blur-sm p-6 sm:p-7 md:p-8 rounded-xl md:rounded-2xl border border-[#FFE2D6]/20 text-[#FFE2D6] max-w-full sm:max-w-2xl md:max-w-xl shadow-xl md:shadow-2xl mx-2 sm:mx-4 md:mx-0">
+        <div className="p-6 sm:p-7 md:p-8 rounded-xl md:rounded-2xl border border-[#FFE2D6]/20 text-[#FFE2D6] max-w-full sm:max-w-2xl md:max-w-xl shadow-xl md:shadow-2xl mx-2 sm:mx-4 md:mx-0">
           <div className="mb-2 flex items-center">
             <div className="w-8 md:w-10 h-0.5 bg-[#FFE2D6] mr-2 md:mr-3"></div>
             <span className="text-[#FFE2D6] font-medium tracking-wider text-sm md:text-base">
