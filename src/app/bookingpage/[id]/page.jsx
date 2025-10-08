@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
 import toast, { Toaster } from 'react-hot-toast'
 import useUserStore from '@/store/useStore'
+import SuccessModal from '@/components/modal/SuccessModal'
 
 const BookingPage = () => {
   const params = useParams()
@@ -22,6 +23,9 @@ const BookingPage = () => {
   const [activeTab, setActiveTab] = useState('details')
   const [showPaymentModal, setShowPaymentModal] = useState(false)
   const [checkingAvailability, setCheckingAvailability] = useState(false)
+  const [paymentProcessing, setPaymentProcessing] = useState(null)
+  const [showSuccessModal, setShowSuccessModal] = useState(false)
+  const [bookingDetails, setBookingDetails] = useState(null)
 
   // Animation variants
   const containerVariants = {
@@ -231,7 +235,7 @@ const BookingPage = () => {
     return !isBooked
   }
 
-  // NEW FUNCTION: Check real-time slot availability with API
+  // Check real-time slot availability with API
   const checkSlotAvailability = async (timeSlot) => {
     if (!selectedDate || !timeSlot) return false
 
@@ -408,12 +412,20 @@ const BookingPage = () => {
       console.log('✅ Booking response:', result)
 
       if (result.success) {
-        toast.success('🎉 Your booking has been confirmed!')
-        toast.success('📧 A confirmation email has been sent to your inbox.')
+        // Set booking details for success modal
+        setBookingDetails({
+          date: formatDisplayDate(selectedDate),
+          time: selectedTime.time,
+          phone: userPhone,
+          service: service.name,
+          bookingId: result.booking?._id || 'N/A'
+        })
         
-        setTimeout(() => {
-          router.push('/')
-        }, 2000)
+        // Show success modal instead of toast
+        setShowSuccessModal(true)
+        
+        // Close payment modal
+        setShowPaymentModal(false)
       }
 
     } catch (error) {
@@ -421,15 +433,17 @@ const BookingPage = () => {
       toast.error(error.message || 'Failed to create booking')
     } finally {
       setSubmitting(false)
-      setShowPaymentModal(false)
+      setPaymentProcessing(false)
     }
   }
 
   const handlePayAfterService = async () => {
+    setPaymentProcessing('pay_later')
     await createBooking('pay_after_service', 'pending')
   }
 
   const handleOnlinePayment = async () => {
+    setPaymentProcessing('pay_now')
     try {
       // First create Razorpay order
       const orderResponse = await fetch(
@@ -466,7 +480,7 @@ const BookingPage = () => {
     } catch (error) {
       console.error('💳 Payment initiation error:', error)
       toast.error('Failed to initiate payment')
-      setSubmitting(false)
+      setPaymentProcessing(false)
     }
   }
 
@@ -504,9 +518,11 @@ const BookingPage = () => {
             await createBooking('razorpay', 'paid', response)
           } else {
             toast.error('Payment verification failed')
+            setPaymentProcessing(false)
           }
         } else {
           toast.error('Payment verification failed')
+          setPaymentProcessing(false)
         }
       },
       prefill: {
@@ -520,7 +536,7 @@ const BookingPage = () => {
       modal: {
         ondismiss: function() {
           toast.error('Payment cancelled')
-          setSubmitting(false)
+          setPaymentProcessing(false)
         }
       }
     };
@@ -574,7 +590,7 @@ const BookingPage = () => {
               className='inline-block relative' 
             >
               <h1 className='text-4xl md:text-5xl font-bold bg-gradient-to-r from-[#2A2118] to-[#5D4C38] bg-clip-text text-transparent mb-6'>
-                BOOK YOUR APPOINTMENT
+                BOOK YOUR Service
               </h1>
             </motion.div>
           </div>
@@ -1188,7 +1204,7 @@ const BookingPage = () => {
             {/* Backdrop click to close */}
             <div 
               className="absolute inset-0" 
-              onClick={() => !submitting && setShowPaymentModal(false)}
+              onClick={() => !paymentProcessing && setShowPaymentModal(false)}
             />
             
             <motion.div
@@ -1208,129 +1224,141 @@ const BookingPage = () => {
                   <span className="text-xl md:text-2xl">💎</span>
                 </div>
                 <h3 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent mb-2">
-                  Complete Your Booking
+                  {paymentProcessing ? 'Processing...' : 'Complete Your Booking'}
                 </h3>
                 <p className="text-gray-500 text-xs md:text-sm">
-                  Choose your preferred payment method
+                  {paymentProcessing ? 'Please wait while we process your request' : 'Choose your preferred payment method'}
                 </p>
               </div>
 
-              {/* Payment Options */}
-              <div className="space-y-3 md:space-y-4 mb-6 md:mb-8">
-                {/* Pay After Service */}
-                <motion.button
-                  onClick={handlePayAfterService}
-                  disabled={submitting}
-                  whileHover={!submitting ? { 
-                    scale: 1.02, 
-                    y: -2,
-                    transition: { type: "spring", stiffness: 400, damping: 17 }
-                  } : {}}
-                  whileTap={!submitting ? { scale: 0.98 } : {}}
-                  className={`w-full p-4 md:p-5 rounded-2xl border-2 transition-all duration-300 text-left relative overflow-hidden group ${
-                    submitting 
-                      ? 'opacity-50 cursor-not-allowed border-gray-200' 
-                      : 'border-emerald-100 hover:border-emerald-300 hover:shadow-lg'
-                  }`}
-                  style={{
-                    background: 'linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%)'
-                  }}
-                >
-                  {/* Animated background effect */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/0 via-emerald-400/5 to-emerald-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
-                  
-                  <div className="flex items-center gap-3 md:gap-4 relative z-10">
-                    <div className="w-10 h-10 md:w-14 md:h-14 bg-gradient-to-br from-emerald-500 to-green-600 rounded-xl flex items-center justify-center text-white font-bold text-lg md:text-xl shadow-lg shadow-emerald-500/25">
-                      ⏰
-                    </div>
-                    <div className="flex-1">
-                      <div className="font-semibold text-gray-900 text-base md:text-lg">Pay Later</div>
-                      <div className="text-xs md:text-sm text-gray-600">Pay at the salon when you visit</div>
-                    </div>
-                    <div className="w-2 h-2 bg-emerald-500 rounded-full group-hover:scale-150 transition-transform duration-300" />
+              {/* Payment Options - Only show if not processing */}
+              {!paymentProcessing ? (
+                <>
+                  <div className="space-y-3 md:space-y-4 mb-6 md:mb-8">
+                    {/* Pay After Service */}
+                    <motion.button
+                      onClick={handlePayAfterService}
+                      disabled={paymentProcessing}
+                      whileHover={!paymentProcessing ? { 
+                        scale: 1.02, 
+                        y: -2,
+                        transition: { type: "spring", stiffness: 400, damping: 17 }
+                      } : {}}
+                      whileTap={!paymentProcessing ? { scale: 0.98 } : {}}
+                      className={`w-full p-4 md:p-5 rounded-2xl border-2 transition-all duration-300 text-left relative overflow-hidden group ${
+                        paymentProcessing 
+                          ? 'opacity-50 cursor-not-allowed border-gray-200' 
+                          : 'border-emerald-100 hover:border-emerald-300 hover:shadow-lg'
+                      }`}
+                      style={{
+                        background: 'linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%)'
+                      }}
+                    >
+                      {/* Animated background effect */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/0 via-emerald-400/5 to-emerald-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
+                      
+                      <div className="flex items-center gap-3 md:gap-4 relative z-10">
+                        <div className="w-10 h-10 md:w-14 md:h-14 bg-gradient-to-br from-emerald-500 to-green-600 rounded-xl flex items-center justify-center text-white font-bold text-lg md:text-xl shadow-lg shadow-emerald-500/25">
+                          ⏰
+                        </div>
+                        <div className="flex-1">
+                          <div className="font-semibold text-gray-900 text-base md:text-lg">Pay Later</div>
+                          <div className="text-xs md:text-sm text-gray-600">Pay at the salon when you visit</div>
+                        </div>
+                        <div className="w-2 h-2 bg-emerald-500 rounded-full group-hover:scale-150 transition-transform duration-300" />
+                      </div>
+                    </motion.button>
+
+                    {/* Online Payment */}
+                    <motion.button
+                      onClick={handleOnlinePayment}
+                      disabled={paymentProcessing}
+                      whileHover={!paymentProcessing ? { 
+                        scale: 1.02, 
+                        y: -2,
+                        transition: { type: "spring", stiffness: 400, damping: 17 }
+                      } : {}}
+                      whileTap={!paymentProcessing ? { scale: 0.98 } : {}}
+                      className={`w-full p-4 md:p-5 rounded-2xl border-2 transition-all duration-300 text-left relative overflow-hidden group ${
+                        paymentProcessing 
+                          ? 'opacity-50 cursor-not-allowed border-gray-200' 
+                          : 'border-blue-100 hover:border-blue-300 hover:shadow-lg'
+                      }`}
+                      style={{
+                        background: 'linear-gradient(135deg, #f0f9ff 0%, #eff6ff 100%)'
+                      }}
+                    >
+                      {/* Animated background effect */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 via-blue-400/5 to-blue-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
+                      
+                      <div className="flex items-center gap-3 md:gap-4 relative z-10">
+                        <div className="w-10 h-10 md:w-14 md:h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center text-white font-bold text-lg md:text-xl shadow-lg shadow-blue-500/25">
+                          🔒
+                        </div>
+                        <div className="flex-1">
+                          <div className="font-semibold text-gray-900 text-base md:text-lg">Pay Now</div>
+                          <div className="text-xs md:text-sm text-gray-600">Secure payment via Razorpay</div>
+                        </div>
+                        <div className="text-blue-600 font-semibold text-xs md:text-sm bg-blue-100 px-2 md:px-3 py-1 rounded-full">
+                          Secure
+                        </div>
+                      </div>
+                    </motion.button>
                   </div>
-                </motion.button>
 
-                {/* Online Payment */}
-                <motion.button
-                  onClick={handleOnlinePayment}
-                  disabled={submitting}
-                  whileHover={!submitting ? { 
-                    scale: 1.02, 
-                    y: -2,
-                    transition: { type: "spring", stiffness: 400, damping: 17 }
-                  } : {}}
-                  whileTap={!submitting ? { scale: 0.98 } : {}}
-                  className={`w-full p-4 md:p-5 rounded-2xl border-2 transition-all duration-300 text-left relative overflow-hidden group ${
-                    submitting 
-                      ? 'opacity-50 cursor-not-allowed border-gray-200' 
-                      : 'border-blue-100 hover:border-blue-300 hover:shadow-lg'
-                  }`}
-                  style={{
-                    background: 'linear-gradient(135deg, #f0f9ff 0%, #eff6ff 100%)'
-                  }}
-                >
-                  {/* Animated background effect */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 via-blue-400/5 to-blue-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
-                  
-                  <div className="flex items-center gap-3 md:gap-4 relative z-10">
-                    <div className="w-10 h-10 md:w-14 md:h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center text-white font-bold text-lg md:text-xl shadow-lg shadow-blue-500/25">
-                      🔒
-                    </div>
-                    <div className="flex-1">
-                      <div className="font-semibold text-gray-900 text-base md:text-lg">Pay Now</div>
-                      <div className="text-xs md:text-sm text-gray-600">Secure payment via Razorpay</div>
-                    </div>
-                    <div className="text-blue-600 font-semibold text-xs md:text-sm bg-blue-100 px-2 md:px-3 py-1 rounded-full">
-                      Secure
-                    </div>
+                  {/* Action Buttons */}
+                  <div className="space-y-2 md:space-y-3">
+                    <motion.button
+                      onClick={() => setShowPaymentModal(false)}
+                      disabled={paymentProcessing}
+                      whileHover={!paymentProcessing ? { scale: 1.02 } : {}}
+                      whileTap={!paymentProcessing ? { scale: 0.98 } : {}}
+                      className={`w-full py-3 md:py-4 rounded-2xl font-semibold transition-all duration-300 border-2 text-sm md:text-base ${
+                        paymentProcessing 
+                          ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed' 
+                          : 'bg-white text-gray-700 border-gray-200 hover:border-gray-300 hover:bg-gray-50 hover:shadow-md'
+                      }`}
+                    >
+                      Cancel
+                    </motion.button>
                   </div>
-                </motion.button>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="space-y-2 md:space-y-3">
-                <motion.button
-                  onClick={() => setShowPaymentModal(false)}
-                  disabled={submitting}
-                  whileHover={!submitting ? { scale: 1.02 } : {}}
-                  whileTap={!submitting ? { scale: 0.98 } : {}}
-                  className={`w-full py-3 md:py-4 rounded-2xl font-semibold transition-all duration-300 border-2 text-sm md:text-base ${
-                    submitting 
-                      ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed' 
-                      : 'bg-white text-gray-700 border-gray-200 hover:border-gray-300 hover:bg-gray-50 hover:shadow-md'
-                  }`}
-                >
-                  Cancel
-                </motion.button>
-              </div>
-
-              {/* Security Badge */}
-              <div className="flex items-center justify-center gap-2 mt-4 md:mt-6 pt-4 md:pt-6 border-t border-gray-100">
-                <div className="w-3 h-3 md:w-4 md:h-4 text-green-500">✓</div>
-                <span className="text-xs text-gray-500">100% Secure & Encrypted</span>
-              </div>
-
-              {/* Loading State */}
-              {submitting && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="absolute inset-0 bg-white/80 backdrop-blur-sm rounded-3xl flex items-center justify-center flex-col"
-                >
+                </>
+              ) : (
+                /* Processing State */
+                <div className="text-center py-8">
                   <motion.div
                     animate={{ rotate: 360 }}
                     transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                    className="w-10 h-10 md:w-12 md:h-12 border-4 border-purple-200 border-t-purple-600 rounded-full mb-3 md:mb-4"
+                    className="w-12 h-12 md:w-16 md:h-16 border-4 border-purple-200 border-t-purple-600 rounded-full mx-auto mb-4"
                   />
-                  <div className="text-gray-700 font-medium text-sm md:text-base">Processing your request...</div>
-                  <div className="text-gray-500 text-xs md:text-sm mt-1">Please wait a moment</div>
-                </motion.div>
+                  <div className="text-gray-700 font-medium text-lg mb-2">Processing...</div>
+                  <div className="text-gray-500 text-sm">
+                    {paymentProcessing === 'pay_later' 
+                      ? 'Setting up your pay later booking' 
+                      : 'Initializing secure payment'}
+                  </div>
+                </div>
+              )}
+
+              {/* Security Badge */}
+              {!paymentProcessing && (
+                <div className="flex items-center justify-center gap-2 mt-4 md:mt-6 pt-4 md:pt-6 border-t border-gray-100">
+                  <div className="w-3 h-3 md:w-4 md:h-4 text-green-500">✓</div>
+                  <span className="text-xs text-gray-500">100% Secure & Encrypted</span>
+                </div>
               )}
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Success Modal */}
+      <SuccessModal
+        isOpen={showSuccessModal}
+        onClose={() => setShowSuccessModal(false)}
+        serviceName={service?.name}
+        bookingDetails={bookingDetails}
+      />
     </div>
   )
 }

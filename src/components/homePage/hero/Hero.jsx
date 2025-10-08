@@ -87,14 +87,17 @@ const Hero = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-            <button 
+            {/* <button 
               onClick={() => router.push("/servicespage")} 
               className="border cursor-pointer border-[#FFE2D6]/50 hover:border-[#FFE2D6] text-[#FFE2D6] px-6 py-2 sm:px-7 sm:py-2.5 md:px-8 md:py-3 rounded-full font-medium transition-all duration-300 hover:bg-[#FFE2D6]/10 text-sm sm:text-base"
             >
               View Services
-            </button>
+            </button> */}
+
             
-            <button className="relative bg-[#FFE2D6] text-[#413329] hover:bg-[#413329] hover:text-[#FFE2D6] border border-[#FFE2D6] px-6 py-2 sm:px-7 sm:py-2.5 md:px-8 md:py-3 rounded-full font-medium transition-all duration-300 transform hover:-translate-y-1 shadow-md hover:shadow-lg group text-sm sm:text-base">
+            <button 
+            onClick={() => router.push("/servicespage")}
+             className="relative cursor-pointer bg-[#FFE2D6] text-[#413329] hover:bg-[#413329] hover:text-[#FFE2D6] border border-[#FFE2D6] px-6 py-2 sm:px-7 sm:py-2.5 md:px-8 md:py-3 rounded-full font-medium transition-all duration-300 transform hover:-translate-y-1 shadow-md hover:shadow-lg group text-sm sm:text-base">
               Book Now
               <span className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 group-hover:translate-x-1 transition-transform duration-300">
                 →
