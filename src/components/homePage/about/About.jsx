@@ -10,7 +10,7 @@ const containerVariants = {
     opacity: 1,
     transition: {
       staggerChildren: 0.2,
-      delayChildren: 0.3
+      delayChildren: 0.001
     }
   }
 }
@@ -21,7 +21,7 @@ const itemVariants = {
     y: 0,
     opacity: 1,
     transition: {
-      duration: 0.5,
+      duration: 0.05,
       ease: "easeOut"
     }
   }
@@ -33,7 +33,7 @@ const imageVariants = {
     scale: 1,
     opacity: 1,
     transition: {
-      duration: 0.7,
+      duration: 0.07,
       ease: "easeOut"
     }
   }
@@ -58,7 +58,7 @@ const About = () => {
             initial={{ width: 0 }}
             whileInView={{ width: "4rem" }}
             viewport={{ once: true }}
-            transition={{ delay: 0.5, duration: 0.5 }}
+            transition={{ delay: 0.1, duration: 0.1 }}
           ></motion.div>
         </motion.div>
 
