@@ -572,7 +572,7 @@ const Auth = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#FFE2D6] to-[#ffd1bf] py-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
+    <div className="min-h-screen bg-gradient-to-br from-[#FFF9F5] via-[#FDBD99] to-[#FAF3EB] py-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
       <Toaster
         position="top-right"
         toastOptions={{
