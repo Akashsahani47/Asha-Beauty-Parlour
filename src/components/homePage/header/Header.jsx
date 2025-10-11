@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import { useAuth } from '@/context/AuthContext'
 import useUserStore from '@/store/useStore'
 import { Link } from 'react-scroll'
+import Image from 'next/image'
 
 const Header = () => {
   const router = useRouter()
@@ -56,21 +57,30 @@ const Header = () => {
     return (
       <div className="flex justify-around bg-[#FFE2D6] p-4 md:p-6 items-center">
         <span className="font-bold text-2xl">ASHA</span>
-        <div className="text-gray-600">Loading...</div>
+        <div className="text-gray-600">Loading...</div> 
       </div>
     )
   }
 
   return (
     <>
-      <div className="flex justify-around bg-[#FFE2D6] p-4 md:p-6 items-center relative">
+      <div className="flex justify-around bg-[#FDBD99] p-4 md:p-6 items-center relative h-20">
         {/* Logo */}
-        <span 
-          onClick={() => handleNavigation('/', 'home')} 
-          className="font-bold text-2xl animate-bounce cursor-pointer"
-        >
-          ASHA
-        </span>
+        <div className="flex-shrink-0 cursor-pointer">
+    <Image
+      src="/logo.png"
+      alt="Company Logo"
+      width={80}
+      height={80}
+      priority
+      className="transform scale-150"
+      onClick={()=>router.push('/')}
+      
+    />
+  </div>
+  
+
+        
         
         {/* Mobile Login Button - Visible only on mobile */}
         <div className="md:hidden">

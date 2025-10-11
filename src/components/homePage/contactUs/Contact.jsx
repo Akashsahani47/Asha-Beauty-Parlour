@@ -31,7 +31,7 @@ const ContactUs = () => {
   }
 
   return (
-    <div className="relative bg-gradient-to-br from-[#FFE2D6] to-[#ffd1bf] py-12 md:py-20 px-4 sm:px-6 lg:px-8 overflow-hidden" id="contact">
+    <div className="relative bg-gradient-to-br from-[#FDBD99] to-[#ffd1bf] py-12 md:py-20 px-4 sm:px-6 lg:px-8 overflow-hidden" id="contact">
       {/* Animated background elements */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
         {[...Array(5)].map((_, i) => (

@@ -283,7 +283,7 @@ const Services = () => {
 
   if (loading) {
     return (
-      <div className='min-h-screen bg-gradient-to-br from-[#FFE2D6] via-[#FFF5F0] to-[#FFE2D6] py-16 px-4 sm:px-6 lg:px-8'>
+      <div className='min-h-screen bg-gradient-to-br from-[#FDBD99] via-[#FFF5F0] to-[#FFE2D6] py-16 px-4 sm:px-6 lg:px-8'>
         <Toaster 
           position="top-right"
           toastOptions={{
@@ -338,7 +338,7 @@ const Services = () => {
 
   if (error && services.length === 0) {
     return (
-      <div className='min-h-screen bg-gradient-to-br from-[#FFE2D6] via-[#FFF5F0] to-[#FFE2D6] py-16 px-4 sm:px-6 lg:px-8'>
+      <div className='min-h-screen bg-gradient-to-br from-[#FDBD99] via-[#FFF5F0] to-[#FFE2D6] py-16 px-4 sm:px-6 lg:px-8'>
         <Toaster position="top-right" />
         <div className='max-w-7xl mx-auto text-center'>
           <motion.div
@@ -389,7 +389,7 @@ const Services = () => {
   }
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-[#FFE2D6] via-[#FFF5F0] to-[#FFE2D6] py-16 px-4 sm:px-6 lg:px-8 overflow-hidden'>
+    <div className='min-h-screen bg-gradient-to-br from-[#FDBD99] via-[#FFF5F0] to-[#FFE2D6] py-16 px-4 sm:px-6 lg:px-8 overflow-hidden'>
       <Toaster position="top-right" />
       
       {/* Animated Background Elements */}

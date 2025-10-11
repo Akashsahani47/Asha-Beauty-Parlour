@@ -126,7 +126,7 @@ const Testimonials = () => {
 
   return (
     <motion.div 
-      className='bg-[#FFE2D6] py-12 md:py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden' 
+      className='bg-[#FDBD99] py-12 md:py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden' 
       id="testimonials"
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}

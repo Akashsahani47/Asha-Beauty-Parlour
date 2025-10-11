@@ -50,7 +50,7 @@ router.push("/servicespage")
   }
 
   return (
-    <div className='bg-[#FFE2D6] py-16 px-4 sm:px-6 lg:px-8 overflow-hidden' id="services">
+    <div className='bg-[#FDBD99] py-16 px-4 sm:px-6 lg:px-8 overflow-hidden' id="services">
       {/* Added overflow-hidden to prevent horizontal scroll */}
       <div className='max-w-7xl mx-auto'>
         {/* Section Header */}
