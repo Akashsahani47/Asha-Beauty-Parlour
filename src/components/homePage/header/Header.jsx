@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/context/AuthContext'
 import useUserStore from '@/store/useStore'
@@ -9,14 +9,28 @@ import Image from 'next/image'
 const Header = () => {
   const router = useRouter()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
   
   const { user: authUser, isAuthenticated, logout } = useAuth()
   const { user: storeUser, loading } = useUserStore()
 
   const user = authUser || storeUser
-
   const [activeTab, setActiveTab] = useState("home")
-  
+
+  // Add scroll effect for sticky header
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setIsScrolled(true)
+      } else {
+        setIsScrolled(false)
+      }
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen)
   }
@@ -30,6 +44,7 @@ const Header = () => {
   const handleScrollNavigation = (section, tabName) => {
     setActiveTab(tabName)
     setIsMobileMenuOpen(false)
+    
     // If we're not on the home page, navigate to home first then scroll
     if (window.location.pathname !== '/') {
       router.push('/')
@@ -37,9 +52,29 @@ const Header = () => {
       setTimeout(() => {
         const element = document.getElementById(section)
         if (element) {
-          element.scrollIntoView({ behavior: 'smooth' })
+          const headerHeight = 80 // Approximate header height
+          const elementPosition = element.getBoundingClientRect().top
+          const offsetPosition = elementPosition + window.pageYOffset - headerHeight
+
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+          })
         }
       }, 100)
+    } else {
+      // If we're already on home page, scroll directly
+      const element = document.getElementById(section)
+      if (element) {
+        const headerHeight = 80 // Approximate header height
+        const elementPosition = element.getBoundingClientRect().top
+        const offsetPosition = elementPosition + window.pageYOffset - headerHeight
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        })
+      }
     }
   }
 
@@ -55,7 +90,7 @@ const Header = () => {
   // Show loading state if needed
   if (loading) {
     return (
-      <div className="flex justify-around bg-[#FFE2D6] p-4 md:p-6 items-center">
+      <div className="flex justify-around bg-[#FFE2D6] p-4 md:p-6 items-center sticky top-0 z-50">
         <span className="font-bold text-2xl">ASHA</span>
         <div className="text-gray-600">Loading...</div> 
       </div>
@@ -64,23 +99,24 @@ const Header = () => {
 
   return (
     <>
-      <div className="flex justify-around bg-[#FDBD99] p-4 md:p-6 items-center relative h-20">
+      <div className={`flex justify-around bg-[#FDBD99] p-4 md:p-6 items-center relative h-20 transition-all duration-300 sticky top-0 z-50 ${
+        isScrolled ? 'shadow-lg' : ''
+      }`}>
         {/* Logo */}
         <div className="flex-shrink-0 cursor-pointer">
-    <Image
-      src="/logo.png"
-      alt="Company Logo"
-      width={80}
-      height={80}
-      priority
-      className="transform scale-150"
-      onClick={()=>router.push('/')}
-      
-    />
-  </div>
-  
-
-        
+          <Image
+            src="/logo.png"
+            alt="Company Logo"
+            width={80}
+            height={80}
+            priority
+            className="transform scale-150"
+            onClick={() => {
+              setActiveTab('home')
+              router.push('/')
+            }}
+          />
+        </div>
         
         {/* Mobile Login Button - Visible only on mobile */}
         <div className="md:hidden">
@@ -91,7 +127,7 @@ const Header = () => {
           ) : (
             <div 
               onClick={() => handleNavigation('/login', 'login')} 
-              className="border border-[#413329] py-2 px-6 hover:bg-[#413329] hover:text-amber-50 transform duration-200 cursor-pointer"
+              className="border border-[#413329] py-2 px-6 hover:bg-[#413329] hover:text-amber-50 transform duration-200 cursor-pointer rounded"
             >
               <button>Login</button>
             </div>
@@ -157,7 +193,7 @@ const Header = () => {
               <p className="font-bold py-2 px-6">Welcome, {user.name}</p>
               <button 
                 onClick={handleLogout}
-                className="border border-[#413329] py-2 px-6 hover:bg-[#413329] hover:text-amber-50 transform duration-200"
+                className="border border-[#413329] py-2 px-6 hover:bg-[#413329] hover:text-amber-50 transform duration-200 rounded"
               >
                 Logout
               </button>
@@ -165,7 +201,7 @@ const Header = () => {
           ) : (
             <div 
               onClick={() => handleNavigation('/login', 'login')} 
-              className="border border-[#413329] py-2 px-9 hover:bg-[#413329] hover:text-amber-50 transform duration-200 cursor-pointer"
+              className="border border-[#413329] py-2 px-9 hover:bg-[#413329] hover:text-amber-50 transform duration-200 cursor-pointer rounded"
             >
               <button>Login</button>
             </div>
@@ -185,7 +221,9 @@ const Header = () => {
       </div>
 
       {/* Mobile Menu */}
-      <div className={`bg-[#FFE2D6] md:hidden transition-all duration-300 ease-in-out ${isMobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0 overflow-hidden'}`}>
+      <div className={`bg-[#FFE2D6] md:hidden transition-all duration-300 ease-in-out fixed top-20 left-0 right-0 z-40 ${
+        isMobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0 overflow-hidden'
+      }`}>
         <ul className="flex flex-col items-center py-4 space-y-4">
           <li 
             onClick={() => handleNavigation('/', 'home')}

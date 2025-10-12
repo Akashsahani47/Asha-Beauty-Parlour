@@ -14,6 +14,7 @@ const BookingPage = () => {
   
   const [service, setService] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
   const [selectedDate, setSelectedDate] = useState(null)
   const [selectedTime, setSelectedTime] = useState(null)
   const [userPhone, setUserPhone] = useState('')
@@ -128,18 +129,32 @@ const BookingPage = () => {
   }
 
   useEffect(() => {
+    // Check if user is authenticated
+    console.log('🔐 Token check:', token)
+    
+    if (!token) {
+      setError('Authentication required')
+      setLoading(false)
+      toast.error('Please login to book services', {
+        duration: 4000,
+        icon: '🔒',
+      })
+      return
+    }
+    
     fetchServiceDetails()
-  }, [params.id])
+  }, [params.id, token])
 
   useEffect(() => {
-    if (selectedDate) {
+    if (selectedDate && token) {
       fetchBookedSlots()
     }
-  }, [selectedDate])
+  }, [selectedDate, token])
 
   const fetchServiceDetails = async () => {
     try {
       setLoading(true)
+      setError(null)
       
       const headers = {
         'Content-Type': 'application/json',
@@ -153,9 +168,20 @@ const BookingPage = () => {
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/getServiceById/${params.id}`,
         { headers }
       )
-
+     
       if (!response.ok) {
-        throw new Error(`Failed to fetch service details: ${response.status}`)
+        if (response.status === 401) {
+          setError('Authentication required')
+          toast.error('Please login to view services', {
+            duration: 4000,
+            icon: '🔒',
+          })
+          throw new Error('Authentication required. Please login to view services.')
+        }
+        toast.error(`Failed to load services (Error: ${response.status})`, {
+          duration: 4000,
+        })
+        throw new Error(`Failed to fetch services: ${response.status}`)
       }
 
       const data = await response.json()
@@ -168,6 +194,7 @@ const BookingPage = () => {
       }
     } catch (error) {
       console.error('Error fetching service:', error)
+      setError(error.message)
       toast.error('Failed to load service details')
     } finally {
       setLoading(false)
@@ -333,6 +360,13 @@ const BookingPage = () => {
   }
 
   const handleMakePayment = async () => {
+    // Check authentication first
+    if (!token) {
+      toast.error('Please login to book services')
+      router.push('/login')
+      return
+    }
+
     if (!selectedDate || !selectedTime || !userPhone) {
       toast.error('Please fill all required fields')
       return
@@ -616,6 +650,69 @@ const BookingPage = () => {
     )
   }
 
+  // Show authentication error - FIXED: Check both token and error
+  if (!token || (error && error.includes('Authentication'))) {
+    console.log('🚨 Showing auth error page - Token:', token, 'Error:', error)
+    return (
+      <div className='min-h-screen bg-gradient-to-br from-[#FDBD99] via-[#FFF5F0] to-[#FFE2D6] py-16 px-4 sm:px-6 lg:px-8'>
+        <Toaster position="top-right" />
+        <div className='max-w-7xl mx-auto text-center'>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            className='inline-block relative mb-8'
+          >
+            <h1 className='text-4xl md:text-6xl font-bold bg-gradient-to-r from-[#413329] to-[#8B7355] bg-clip-text text-transparent mb-6'>
+             LOGIN TO BOOK SERVICE
+            </h1>
+          </motion.div>
+          
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className='bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl p-12 max-w-md mx-auto border border-white/20'
+          >
+            <div className='text-red-600 mb-6'>
+              <motion.div
+                animate={{ 
+                  scale: [1, 1.1, 1],
+                  rotate: [0, -5, 5, 0]
+                }}
+                transition={{ duration: 2, repeat: Infinity }}
+              >
+                <svg className="w-20 h-20 mx-auto mb-6" fill="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                </svg>
+              </motion.div>
+              <p className='text-2xl font-bold text-[#413329] mb-4'>Access Required</p>
+              <p className='text-[#413329]/70 mb-8'>Please login to book our premium services</p>
+            </div>
+            <motion.button 
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => {
+                toast.loading('Redirecting to login...', { duration: 1000 })
+                setTimeout(() => router.push('/login'), 1000)
+              }}
+              className=' cursor-pointer bg-gradient-to-r from-[#413329] to-[#8B7355] text-white px-8 py-4 rounded-2xl font-semibold hover:shadow-2xl transition-all duration-300 w-full mb-4'
+            >
+              Login to Continue
+            </motion.button>
+            {/* <motion.button 
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => router.push('/servicespage')}
+              className='bg-gray-100 text-gray-700 px-8 py-4 rounded-2xl font-semibold hover:shadow-2xl transition-all duration-300 w-full'
+            >
+              Back to Services
+            </motion.button> */}
+          </motion.div>
+        </div>
+      </div>
+    )
+  }
+
+  // Show service not found error
   if (!service) {
     return (
       <div className='min-h-screen bg-gradient-to-br from-[#FDBD99] via-[#FFF9F5] to-[#FAF3EB] py-16 px-4 sm:px-6 lg:px-8 overflow-x-hidden'>
