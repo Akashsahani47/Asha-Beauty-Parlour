@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from '@/context/AuthContext';
 
 const Auth = () => {
-  const [isLogin, setIsLogin] = useState(true);
+  const [isLogin, setIsLogin] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [forgotPassword, setForgotPassword] = useState(false);
   const [otpSent, setOtpSent] = useState(false); // New state to track if OTP was sent
@@ -14,7 +14,7 @@ const Auth = () => {
     email: "",
     password: "",
     phone: "",
-    rememberMe: false,
+    rememberMe: true,
     otp: "",
     newPassword: ""
   });
@@ -173,7 +173,7 @@ const Auth = () => {
       });
 
       const data = await response.json();
-
+       console.log("✅ Authentication response data:", data);
       if (!response.ok) {
         toast.dismiss(loadingToast);
         throw new Error(data.message || `Authentication failed with status ${response.status}`);
@@ -207,6 +207,10 @@ const Auth = () => {
             console.error('❌ Error fetching user data:', userError);
             toast.dismiss(loadingToast);
             toast.success('Login successful! Redirecting...');
+            if (data.user.type === "admin"){
+              router.push('/admin');
+              return;
+            }
             router.push('/');
             return;
           }
@@ -216,6 +220,10 @@ const Auth = () => {
         toast.success('Login successful! Redirecting...');
         
         setTimeout(() => {
+          if (data.user.type === "admin"){
+              router.push('/admin');
+              return;
+            }
           router.push('/');
           router.refresh();
         }, 500);

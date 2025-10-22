@@ -75,7 +75,7 @@ const Services = () => {
 
         if (activeServices.length > 0) {
           toast.success(`Loaded ${activeServices.length} services successfully!`, {
-            duration: 3000,
+            duration: 2000,
             icon: '✨',
           })
         } else {

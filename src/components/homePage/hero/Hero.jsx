@@ -100,7 +100,7 @@ const Hero = () => {
             </button>
 
             <button 
-              onClick={() => router.push("/servicespage")} 
+              onClick={() => router.push("/profile")} 
               className="border cursor-pointer border-[#FFE2D6]/50 hover:border-[#FFE2D6] text-[#FFE2D6] px-6 py-2 sm:px-7 sm:py-2.5 md:px-8 md:py-3 rounded-full font-medium transition-all duration-300 hover:bg-[#FFE2D6]/10 text-sm sm:text-base"
             >
               View Profile
