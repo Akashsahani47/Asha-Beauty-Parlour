@@ -153,7 +153,7 @@ const CustomerDetails = () => {
           <div className="flex flex-col lg:flex-row space-y-3 lg:space-y-0 lg:space-x-4 justify-center">
             <button 
               onClick={() => router.push('/admin/customer')}
-              className="bg-gradient-to-r from-[#413329] to-[#5D4A3A] text-[#FFE2D6] px-4 lg:px-6 py-2 lg:py-3 rounded-xl lg:rounded-2xl font-semibold transition-all duration-300 hover:scale-105 text-sm lg:text-base"
+              className=" bg-gradient-to-r from-[#413329] to-[#5D4A3A] text-[#FFE2D6]  px-4 lg:px-6 py-2 lg:py-3 rounded-xl lg:rounded-2xl font-semibold transition-all duration-300 hover:scale-105 text-sm lg:text-base"
             >
               Back to Customers
             </button>
@@ -195,7 +195,7 @@ const CustomerDetails = () => {
         <div className="flex items-center justify-between mb-6 lg:mb-8">
           <button
             onClick={() => router.push('/admin/customer')}
-            className="flex items-center space-x-2 text-[#413329] hover:text-[#5D4A3A] transition-colors group text-sm lg:text-base"
+            className="flex ml-32 md:ml-0 items-center space-x-2 text-[#413329] hover:text-[#5D4A3A] transition-colors group text-sm lg:text-base"
           >
             <ArrowLeft className="w-4 h-4 lg:w-5 lg:h-5 group-hover:-translate-x-1 transition-transform" />
             <span className="font-semibold">Back to Customers</span>

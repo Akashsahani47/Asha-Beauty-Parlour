@@ -167,10 +167,10 @@ const Customers = () => {
           <div className="bg-white/90 backdrop-blur-lg rounded-xl lg:rounded-2xl shadow-lg border border-white/40 p-3 lg:p-4 text-center">
             <button
               onClick={fetchCustomers}
-              className="bg-gradient-to-r from-[#413329] to-[#5D4A3A] text-[#FFE2D6] hover:from-[#FFE2D6] hover:to-[#FDBD99] hover:text-[#413329] border-2 border-[#413329] px-3 lg:px-6 py-2 lg:py-3 rounded-xl lg:rounded-2xl font-semibold transition-all duration-300 transform hover:scale-105 flex items-center justify-center w-full"
+              className="bg-gradient-to-r from-[#413329] to-[#5D4A3A] text-[#FFE2D6] hover:from-[#FFE2D6] hover:to-[#FDBD99] hover:text-[#413329] border-2 border-[#413329] px-3 lg:px-6 py-2 lg:py-3 rounded-xl lg:rounded-2xl font-semibold transition-all duration-300 transform hover:scale-105 flex items-center justify-center w-full text-xs lg:text-sm"
             >
               <RefreshCw className="w-4 h-4 lg:w-5 lg:h-5 mr-1 lg:mr-2" />
-              <span className="text-xs lg:text-sm">Refresh</span>
+              <span>Refresh</span>
             </button>
           </div>
         </div>
@@ -198,9 +198,9 @@ const Customers = () => {
           </div>
 
           {filteredCustomers.length === 0 ? (
-            <div className="bg-white/90 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/40 p-6 lg:p-8 text-center">
+            <div className="bg-white/90 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/40 p-6 text-center">
               <Users className="w-12 h-12 text-[#413329]/40 mx-auto mb-4" />
-              <p className="text-[#413329]/60 text-base lg:text-lg">
+              <p className="text-[#413329]/60 text-base">
                 {customers.length === 0 ? 'No customers found' : 'No customers matching your search'}
               </p>
             </div>
