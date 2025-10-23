@@ -73,7 +73,7 @@ const Customers = () => {
   // Loading state
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#FFF9F5] via-[#FDBD99] to-[#FAF3EB] py-4 lg:py-8 ml-0 lg:ml-80">
+      <div className="min-h-screen bg-gradient-to-br from-[#FFF9F5] via-[#FDBD99] to-[#FAF3EB] py-4 lg:py-8 ml-0 lg:ml-80 overflow-x-hidden">
         <div className="max-w-7xl mx-auto px-3 lg:px-4">
           {/* Mobile Header Skeleton */}
           <div className="text-center mb-6 lg:mb-12">
@@ -118,7 +118,7 @@ const Customers = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#FFF9F5] via-[#FDBD99] to-[#FAF3EB] py-4 lg:py-8 ml-0 lg:ml-80">
+    <div className="min-h-screen bg-gradient-to-br from-[#FFF9F5] via-[#FDBD99] to-[#FAF3EB] py-4 lg:py-8 ml-0 lg:ml-80 overflow-x-hidden">
       <div className="max-w-7xl mx-auto px-3 lg:px-4">
         
         {/* Header - Mobile Optimized */}
@@ -198,9 +198,9 @@ const Customers = () => {
           </div>
 
           {filteredCustomers.length === 0 ? (
-            <div className="bg-white/90 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/40 p-8 text-center">
+            <div className="bg-white/90 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/40 p-6 lg:p-8 text-center">
               <Users className="w-12 h-12 text-[#413329]/40 mx-auto mb-4" />
-              <p className="text-[#413329]/60 text-lg">
+              <p className="text-[#413329]/60 text-base lg:text-lg">
                 {customers.length === 0 ? 'No customers found' : 'No customers matching your search'}
               </p>
             </div>

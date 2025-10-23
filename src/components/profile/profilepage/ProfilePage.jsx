@@ -208,47 +208,47 @@ const ProfilePage = () => {
   // Enhanced loading skeleton
   if (loading && !isEditing) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#FFF9F5] via-[#FDBD99] to-[#FAF3EB] py-8 ml-0 lg:ml-80 transition-all duration-500">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="min-h-screen bg-gradient-to-br from-[#FFF9F5] via-[#FDBD99] to-[#FAF3EB] py-4 lg:py-8 ml-0 lg:ml-80 transition-all duration-500 overflow-x-hidden">
+        <div className="max-w-7xl mx-auto px-3 lg:px-4">
           {/* Enhanced Header Skeleton */}
-          <div className="text-center mb-16">
+          <div className="text-center mb-8 lg:mb-16">
             <div className="animate-pulse">
-              <div className="h-16 bg-gradient-to-r from-[#413329]/20 to-[#413329]/10 rounded-2xl w-80 mx-auto mb-6"></div>
-              <div className="h-6 bg-[#413329]/10 rounded-lg w-96 mx-auto"></div>
+              <div className="h-10 lg:h-16 bg-gradient-to-r from-[#413329]/20 to-[#413329]/10 rounded-2xl w-48 lg:w-80 mx-auto mb-4 lg:mb-6"></div>
+              <div className="h-4 lg:h-6 bg-[#413329]/10 rounded-lg w-64 lg:w-96 mx-auto"></div>
             </div>
           </div>
 
           {/* Stats Grid Skeleton */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-6 mb-8 lg:mb-12">
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="bg-white/80 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/40 p-6 animate-pulse">
+              <div key={i} className="bg-white/80 backdrop-blur-lg rounded-2xl lg:rounded-3xl shadow-2xl border border-white/40 p-3 lg:p-6 animate-pulse">
                 <div className="flex items-center justify-between">
-                  <div className="space-y-3 flex-1">
-                    <div className="h-5 bg-[#413329]/10 rounded-lg w-20"></div>
-                    <div className="h-8 bg-gradient-to-r from-[#413329]/20 to-[#413329]/10 rounded-xl w-16"></div>
+                  <div className="space-y-2 lg:space-y-3 flex-1">
+                    <div className="h-3 lg:h-5 bg-[#413329]/10 rounded-lg w-12 lg:w-20"></div>
+                    <div className="h-5 lg:h-8 bg-gradient-to-r from-[#413329]/20 to-[#413329]/10 rounded-xl w-10 lg:w-16"></div>
                   </div>
-                  <div className="w-12 h-12 bg-[#413329]/10 rounded-2xl"></div>
+                  <div className="w-8 h-8 lg:w-12 lg:h-12 bg-[#413329]/10 rounded-xl lg:rounded-2xl"></div>
                 </div>
               </div>
             ))}
           </div>
 
           {/* Enhanced Profile Card Skeleton */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
             <div className="lg:col-span-2">
-              <div className="bg-white/80 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/40 p-8 animate-pulse">
-                <div className="flex flex-col lg:flex-row gap-8 items-start">
-                  <div className="flex-shrink-0 text-center lg:text-left">
-                    <div className="w-32 h-32 bg-gradient-to-r from-[#413329]/20 to-[#413329]/10 rounded-full mx-auto lg:mx-0 mb-4"></div>
-                    <div className="h-6 bg-[#413329]/10 rounded-lg w-32"></div>
-                    <div className="h-4 bg-[#413329]/5 rounded-lg w-24 mt-2"></div>
+              <div className="bg-white/80 backdrop-blur-lg rounded-2xl lg:rounded-3xl shadow-2xl border border-white/40 p-4 lg:p-8 animate-pulse">
+                <div className="flex flex-col lg:flex-row gap-4 lg:gap-8 items-start">
+                  <div className="flex-shrink-0 text-center lg:text-left w-full lg:w-auto">
+                    <div className="w-20 h-20 lg:w-32 lg:h-32 bg-gradient-to-r from-[#413329]/20 to-[#413329]/10 rounded-full mx-auto lg:mx-0 mb-3 lg:mb-4"></div>
+                    <div className="h-4 lg:h-6 bg-[#413329]/10 rounded-lg w-24 lg:w-32 mx-auto lg:mx-0"></div>
+                    <div className="h-3 lg:h-4 bg-[#413329]/5 rounded-lg w-20 lg:w-24 mt-1 lg:mt-2 mx-auto lg:mx-0"></div>
                   </div>
                   
-                  <div className="flex-1 space-y-6">
+                  <div className="flex-1 space-y-4 lg:space-y-6 w-full">
                     {[...Array(4)].map((_, i) => (
-                      <div key={i} className="space-y-3">
-                        <div className="h-5 bg-[#413329]/10 rounded-lg w-24"></div>
-                        <div className="h-14 bg-gradient-to-r from-[#413329]/10 to-[#413329]/5 rounded-2xl w-full"></div>
+                      <div key={i} className="space-y-2 lg:space-y-3">
+                        <div className="h-4 lg:h-5 bg-[#413329]/10 rounded-lg w-16 lg:w-24"></div>
+                        <div className="h-10 lg:h-14 bg-gradient-to-r from-[#413329]/10 to-[#413329]/5 rounded-xl lg:rounded-2xl w-full"></div>
                       </div>
                     ))}
                   </div>
@@ -257,15 +257,15 @@ const ProfilePage = () => {
             </div>
 
             {/* Sidebar Skeleton */}
-            <div className="space-y-6">
+            <div className="space-y-4 lg:space-y-6">
               {[...Array(3)].map((_, i) => (
-                <div key={i} className="bg-white/80 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/40 p-6 animate-pulse">
-                  <div className="h-6 bg-[#413329]/10 rounded-lg w-32 mb-4"></div>
-                  <div className="space-y-3">
+                <div key={i} className="bg-white/80 backdrop-blur-lg rounded-2xl lg:rounded-3xl shadow-2xl border border-white/40 p-4 lg:p-6 animate-pulse">
+                  <div className="h-5 lg:h-6 bg-[#413329]/10 rounded-lg w-24 lg:w-32 mb-3 lg:mb-4"></div>
+                  <div className="space-y-2 lg:space-y-3">
                     {[...Array(3)].map((_, j) => (
                       <div key={j} className="flex justify-between">
-                        <div className="h-4 bg-[#413329]/5 rounded-lg w-20"></div>
-                        <div className="h-4 bg-[#413329]/10 rounded-lg w-16"></div>
+                        <div className="h-3 lg:h-4 bg-[#413329]/5 rounded-lg w-16 lg:w-20"></div>
+                        <div className="h-3 lg:h-4 bg-[#413329]/10 rounded-lg w-12 lg:w-16"></div>
                       </div>
                     ))}
                   </div>
@@ -281,21 +281,21 @@ const ProfilePage = () => {
   // Enhanced Error state
   if (error && !user.name) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#FFF9F5] via-[#FDBD99] to-[#FAF3EB] py-8 ml-0 lg:ml-80 transition-all duration-500 flex items-center justify-center">
-        <div className="max-w-md w-full mx-4">
-          <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/40 p-8 text-center transform hover:scale-105 transition-transform duration-500">
-            <div className="w-20 h-20 bg-gradient-to-br from-rose-100 to-pink-200 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
-              <AlertCircle className="w-10 h-10 text-rose-600" />
+      <div className="min-h-screen bg-gradient-to-br from-[#FFF9F5] via-[#FDBD99] to-[#FAF3EB] py-4 lg:py-8 ml-0 lg:ml-80 transition-all duration-500 flex items-center justify-center overflow-x-hidden">
+        <div className="max-w-md w-full mx-3 lg:mx-4">
+          <div className="bg-white/90 backdrop-blur-xl rounded-2xl lg:rounded-3xl shadow-2xl border border-white/40 p-6 lg:p-8 text-center transform hover:scale-105 transition-transform duration-500">
+            <div className="w-16 h-16 lg:w-20 lg:h-20 bg-gradient-to-br from-rose-100 to-pink-200 rounded-full flex items-center justify-center mx-auto mb-4 lg:mb-6 shadow-lg">
+              <AlertCircle className="w-8 h-8 lg:w-10 lg:h-10 text-rose-600" />
             </div>
-            <h2 className="text-3xl font-bold bg-gradient-to-r from-rose-600 to-pink-600 bg-clip-text text-transparent mb-4">
+            <h2 className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-rose-600 to-pink-600 bg-clip-text text-transparent mb-3 lg:mb-4">
               Connection Issue
             </h2>
-            <p className="text-[#413329]/70 mb-8 text-lg">{error}</p>
+            <p className="text-[#413329]/70 mb-6 lg:mb-8 text-base lg:text-lg">{error}</p>
             <button 
               onClick={fetchUserData} 
-              className="w-full bg-gradient-to-r from-[#413329] to-[#5D4A3A] text-[#FFE2D6] hover:from-[#FFE2D6] hover:to-[#FDBD99] hover:text-[#413329] border-2 border-[#413329] py-4 rounded-2xl font-semibold transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
+              className="w-full bg-gradient-to-r from-[#413329] to-[#5D4A3A] text-[#FFE2D6] hover:from-[#FFE2D6] hover:to-[#FDBD99] hover:text-[#413329] border-2 border-[#413329] py-3 lg:py-4 rounded-xl lg:rounded-2xl font-semibold transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
             >
-              <Sparkles className="w-5 h-5 inline mr-2" />
+              <Sparkles className="w-4 h-4 lg:w-5 lg:h-5 inline mr-2" />
               Retry Connection
             </button>
           </div>
@@ -305,112 +305,112 @@ const ProfilePage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#FFF9F5] via-[#FDBD99] to-[#FAF3EB] py-8 ml-0 lg:ml-80 transition-all duration-500">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-[#FFF9F5] via-[#FDBD99] to-[#FAF3EB] py-4 lg:py-8 ml-0 lg:ml-80 transition-all duration-500 overflow-x-hidden">
+      <div className="max-w-7xl mx-auto px-3 lg:px-4">
        
         {/* Success/Error Messages */}
         {message && (
-          <div className={`mb-8 p-6 rounded-2xl backdrop-blur-lg border-2 ${
+          <div className={`mb-6 lg:mb-8 p-4 lg:p-6 rounded-xl lg:rounded-2xl backdrop-blur-lg border-2 ${
             message.includes('Error') 
               ? 'bg-rose-500/20 text-rose-700 border-rose-300/50' 
               : 'bg-emerald-500/20 text-emerald-700 border-emerald-300/50'
           }`}>
-            <div className="flex items-center justify-center space-x-3">
+            <div className="flex items-center justify-center space-x-2 lg:space-x-3">
               {message.includes('Error') ? (
-                <AlertCircle className="w-7 h-7 flex-shrink-0" />
+                <AlertCircle className="w-5 h-5 lg:w-7 lg:h-7 flex-shrink-0" />
               ) : (
-                <CheckCircle className="w-7 h-7 flex-shrink-0" />
+                <CheckCircle className="w-5 h-5 lg:w-7 lg:h-7 flex-shrink-0" />
               )}
-              <span className="text-lg font-semibold">{message}</span>
+              <span className="text-base lg:text-lg font-semibold text-center">{message}</span>
             </div>
           </div>
         )}
 
         {/* Enhanced Stats Grid */}
-        <div className="grid grid-cols-1 hidden md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          <div className="bg-white/90  backdrop-blur-lg rounded-3xl shadow-2xl border border-white/40 p-6 transform hover:scale-105 transition-all duration-300 group">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-6 mb-8 lg:mb-12">
+          <div className="bg-white/90 backdrop-blur-lg rounded-2xl lg:rounded-3xl shadow-2xl border border-white/40 p-3 lg:p-6 transform hover:scale-105 transition-all duration-300 group">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[#413329]/60 text-sm font-semibold mb-2 uppercase tracking-wide">Total Bookings</p>
-                <p className="text-3xl font-bold text-[#413329]">{userStats.totalBookings}</p>
-                <p className="text-[#413329]/40 text-xs mt-1">Lifetime orders</p>
+                <p className="text-[#413329]/60 text-xs lg:text-sm font-semibold mb-1 lg:mb-2 uppercase tracking-wide">Total Bookings</p>
+                <p className="text-xl lg:text-3xl font-bold text-[#413329]">{userStats.totalBookings}</p>
+                <p className="text-[#413329]/40 text-xs mt-1 hidden lg:block">Lifetime orders</p>
               </div>
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                <Calendar className="w-6 h-6 text-white" />
+              <div className="w-8 h-8 lg:w-12 lg:h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl lg:rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                <Calendar className="w-4 h-4 lg:w-6 lg:h-6 text-white" />
               </div>
             </div>
           </div>
 
-         <div className="bg-white/90 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/40 p-6 transform hover:scale-105 transition-all duration-300 group">
+          <div className="bg-white/90 backdrop-blur-lg rounded-2xl lg:rounded-3xl shadow-2xl border border-white/40 p-3 lg:p-6 transform hover:scale-105 transition-all duration-300 group">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[#413329]/60 text-sm font-semibold mb-2 uppercase tracking-wide">Loyalty Points</p>
-                <p className="text-3xl font-bold text-[#413329]">{userStats.loyaltyPoints}</p>
-                <p className="text-[#413329]/40 text-xs mt-1">Available rewards</p>
+                <p className="text-[#413329]/60 text-xs lg:text-sm font-semibold mb-1 lg:mb-2 uppercase tracking-wide">Loyalty Points</p>
+                <p className="text-xl lg:text-3xl font-bold text-[#413329]">{userStats.loyaltyPoints}</p>
+                <p className="text-[#413329]/40 text-xs mt-1 hidden lg:block">Available rewards</p>
               </div>
-              <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-500 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                <Award className="w-6 h-6 text-white" />
+              <div className="w-8 h-8 lg:w-12 lg:h-12 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl lg:rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                <Award className="w-4 h-4 lg:w-6 lg:h-6 text-white" />
               </div>
             </div>
           </div>
 
-          <div className="bg-white/90 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/40 p-6 transform hover:scale-105 transition-all duration-300 group">
+          <div className="bg-white/90 backdrop-blur-lg rounded-2xl lg:rounded-3xl shadow-2xl border border-white/40 p-3 lg:p-6 transform hover:scale-105 transition-all duration-300 group">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[#413329]/60 text-sm font-semibold mb-2 uppercase tracking-wide">Success Rate</p>
-                <p className="text-3xl font-bold text-[#413329]">{userStats.successRate}</p>
-                <p className="text-[#413329]/40 text-xs mt-1">Completion score</p>
+                <p className="text-[#413329]/60 text-xs lg:text-sm font-semibold mb-1 lg:mb-2 uppercase tracking-wide">Success Rate</p>
+                <p className="text-xl lg:text-3xl font-bold text-[#413329]">{userStats.successRate}</p>
+                <p className="text-[#413329]/40 text-xs mt-1 hidden lg:block">Completion score</p>
               </div>
-              <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-green-500 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                <TrendingUp className="w-6 h-6 text-white" />
+              <div className="w-8 h-8 lg:w-12 lg:h-12 bg-gradient-to-br from-emerald-500 to-green-500 rounded-xl lg:rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                <TrendingUp className="w-4 h-4 lg:w-6 lg:h-6 text-white" />
               </div>
             </div>
           </div>
 
-          <div className="bg-white/90 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/40 p-6 transform hover:scale-105 transition-all duration-300 group">
+          <div className="bg-white/90 backdrop-blur-lg rounded-2xl lg:rounded-3xl shadow-2xl border border-white/40 p-3 lg:p-6 transform hover:scale-105 transition-all duration-300 group">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[#413329]/60 text-sm font-semibold mb-2 uppercase tracking-wide">Response Time</p>
-                <p className="text-3xl font-bold text-[#413329]">{userStats.responseTime}</p>
-                <p className="text-[#413329]/40 text-xs mt-1">Average response</p>
+                <p className="text-[#413329]/60 text-xs lg:text-sm font-semibold mb-1 lg:mb-2 uppercase tracking-wide">Response Time</p>
+                <p className="text-xl lg:text-3xl font-bold text-[#413329]">{userStats.responseTime}</p>
+                <p className="text-[#413329]/40 text-xs mt-1 hidden lg:block">Average response</p>
               </div>
-              <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                <Clock className="w-6 h-6 text-white" />
+              <div className="w-8 h-8 lg:w-12 lg:h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl lg:rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                <Clock className="w-4 h-4 lg:w-6 lg:h-6 text-white" />
               </div>
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
           {/* Enhanced Main Profile Card */}
           <div className="lg:col-span-2">
-            <div className="bg-white/90 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/40 overflow-hidden hover:shadow-3xl transition-all duration-500 group">
+            <div className="bg-white/90 backdrop-blur-lg rounded-2xl lg:rounded-3xl shadow-2xl border border-white/40 overflow-hidden hover:shadow-3xl transition-all duration-500 group">
               {/* Premium Header */}
-              <div className="bg-gradient-to-r from-[#413329] via-[#5D4A3A] to-[#413329] p-8 text-white relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
-                <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-12 -translate-x-12"></div>
+              <div className="bg-gradient-to-r from-[#413329] via-[#5D4A3A] to-[#413329] p-4 lg:p-8 text-white relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-16 h-16 lg:w-32 lg:h-32 bg-white/10 rounded-full -translate-y-8 lg:-translate-y-16 translate-x-8 lg:translate-x-16"></div>
+                <div className="absolute bottom-0 left-0 w-12 h-12 lg:w-24 lg:h-24 bg-white/5 rounded-full translate-y-6 lg:translate-y-12 -translate-x-6 lg:-translate-x-12"></div>
                 
                 <div className="flex flex-col lg:flex-row items-center justify-between relative z-10">
-                  <div className="flex items-center space-x-6">
+                  <div className="flex flex-col lg:flex-row items-center space-y-4 lg:space-y-0 lg:space-x-4 lg:space-x-6 text-center lg:text-left">
                     <div className="relative">
-                      <div className="w-28 h-28 bg-gradient-to-br from-[#FFE2D6] to-[#FDBD99] rounded-full flex items-center justify-center shadow-2xl border-4 border-white/20">
-                        <User className="w-14 h-14 text-[#413329]" />
+                      <div className="w-16 h-16 lg:w-28 lg:h-28 bg-gradient-to-br from-[#FFE2D6] to-[#FDBD99] rounded-full flex items-center justify-center shadow-2xl border-4 border-white/20">
+                        <User className="w-6 h-6 lg:w-14 lg:h-14 text-[#413329]" />
                       </div>
-                      <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-gradient-to-r from-emerald-400 to-green-500 rounded-full flex items-center justify-center border-2 border-white shadow-lg">
-                        <BadgeCheck className="w-5 h-5 text-white" />
+                      <div className="absolute -bottom-1 -right-1 lg:-bottom-2 lg:-right-2 w-6 h-6 lg:w-10 lg:h-10 bg-gradient-to-r from-emerald-400 to-green-500 rounded-full flex items-center justify-center border-2 border-white shadow-lg">
+                        <BadgeCheck className="w-3 h-3 lg:w-5 lg:h-5 text-white" />
                       </div>
                     </div>
                     <div>
-                      <h2 className="text-4xl font-black mb-3">{user.name}</h2>
-                      <p className="text-white/80 text-xl mb-2">{user.email}</p>
-                      <div className="flex items-center space-x-4">
-                        <div className={`inline-flex items-center px-4 py-2 rounded-2xl text-sm font-bold ${getMembershipBadge(userStats.membershipTier)}`}>
+                      <h2 className="text-2xl lg:text-4xl font-black mb-2 lg:mb-3">{user.name}</h2>
+                      <p className="text-white/80 text-sm lg:text-xl mb-2 lg:mb-2">{user.email}</p>
+                      <div className="flex flex-col lg:flex-row items-center space-y-2 lg:space-y-0 lg:space-x-4">
+                        <div className={`inline-flex items-center px-3 lg:px-4 py-1 lg:py-2 rounded-xl lg:rounded-2xl text-xs lg:text-sm font-bold ${getMembershipBadge(userStats.membershipTier)}`}>
                           {getMembershipIcon(userStats.membershipTier)}
-                          <span className="ml-2">{userStats.membershipTier} Member</span>
+                          <span className="ml-1 lg:ml-2">{userStats.membershipTier} Member</span>
                         </div>
                         <div className="flex text-amber-400">
                           {[...Array(5)].map((_, i) => (
-                            <Star key={i} className="w-4 h-4 fill-current" />
+                            <Star key={i} className="w-3 h-3 lg:w-4 lg:h-4 fill-current" />
                           ))}
                         </div>
                       </div>
@@ -420,29 +420,29 @@ const ProfilePage = () => {
                   {!isEditing ? (
                     <button
                       onClick={handleEditToggle}
-                      className="mt-6 lg:mt-0 bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white border-2 border-white/30 px-8 py-4 rounded-2xl font-semibold transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl flex items-center group"
+                      className="mt-4 lg:mt-0 bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white border-2 border-white/30 px-4 lg:px-8 py-2 lg:py-4 rounded-xl lg:rounded-2xl font-semibold transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl flex items-center group w-full lg:w-auto justify-center"
                     >
-                      <Edit3 className="w-5 h-5 mr-3 group-hover:scale-110 transition-transform" />
+                      <Edit3 className="w-4 h-4 lg:w-5 lg:h-5 mr-2 lg:mr-3 group-hover:scale-110 transition-transform" />
                       Edit Profile
                     </button>
                   ) : (
                     <button
                       onClick={handleCancel}
-                      className="mt-6 lg:mt-0 bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white border-2 border-white/30 px-8 py-4 rounded-2xl font-semibold transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl flex items-center group"
+                      className="mt-4 lg:mt-0 bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white border-2 border-white/30 px-4 lg:px-8 py-2 lg:py-4 rounded-xl lg:rounded-2xl font-semibold transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl flex items-center group w-full lg:w-auto justify-center"
                     >
-                      <X className="w-5 h-5 mr-3 group-hover:scale-110 transition-transform" />
+                      <X className="w-4 h-4 lg:w-5 lg:h-5 mr-2 lg:mr-3 group-hover:scale-110 transition-transform" />
                       Cancel Edit
                     </button>
                   )}
                 </div>
               </div>
 
-              <div className="p-8">
-                <form onSubmit={handleSubmit} className="space-y-8">
+              <div className="p-4 lg:p-8">
+                <form onSubmit={handleSubmit} className="space-y-6 lg:space-y-8">
                   {/* Name Field */}
                   <div className="group">
-                    <label className="block text-lg font-semibold text-[#413329] mb-4 flex items-center">
-                      <User className="w-6 h-6 mr-3 text-[#413329]/60" />
+                    <label className="block text-base lg:text-lg font-semibold text-[#413329] mb-3 lg:mb-4 flex items-center">
+                      <User className="w-5 h-5 lg:w-6 lg:h-6 mr-2 lg:mr-3 text-[#413329]/60" />
                       Full Name
                       <span className="text-rose-500 ml-1">*</span>
                     </label>
@@ -452,7 +452,7 @@ const ProfilePage = () => {
                       value={user.name}
                       onChange={handleInputChange}
                       disabled={!isEditing}
-                      className="w-full px-6 py-4 bg-white/50 border-2 border-white/60 rounded-2xl focus:outline-none focus:ring-4 focus:ring-[#413329]/20 focus:border-[#413329]/30 disabled:bg-gray-100/50 disabled:cursor-not-allowed text-[#413329] placeholder-[#413329]/40 text-lg transition-all duration-300 backdrop-blur-sm"
+                      className="w-full px-4 lg:px-6 py-3 lg:py-4 bg-white/50 border-2 border-white/60 rounded-xl lg:rounded-2xl focus:outline-none focus:ring-4 focus:ring-[#413329]/20 focus:border-[#413329]/30 disabled:bg-gray-100/50 disabled:cursor-not-allowed text-[#413329] placeholder-[#413329]/40 text-base lg:text-lg transition-all duration-300 backdrop-blur-sm"
                       placeholder="Enter your full name"
                       required
                     />
@@ -460,8 +460,8 @@ const ProfilePage = () => {
 
                   {/* Email Field */}
                   <div className="group">
-                    <label className="block text-lg font-semibold text-[#413329] mb-4 flex items-center">
-                      <Mail className="w-6 h-6 mr-3 text-[#413329]/60" />
+                    <label className="block text-base lg:text-lg font-semibold text-[#413329] mb-3 lg:mb-4 flex items-center">
+                      <Mail className="w-5 h-5 lg:w-6 lg:h-6 mr-2 lg:mr-3 text-[#413329]/60" />
                       Email Address
                       <span className="text-rose-500 ml-1">*</span>
                     </label>
@@ -471,7 +471,7 @@ const ProfilePage = () => {
                       value={user.email}
                       onChange={handleInputChange}
                       disabled={!isEditing}
-                      className="w-full px-6 py-4 bg-white/50 border-2 border-white/60 rounded-2xl focus:outline-none focus:ring-4 focus:ring-[#413329]/20 focus:border-[#413329]/30 disabled:bg-gray-100/50 disabled:cursor-not-allowed text-[#413329] placeholder-[#413329]/40 text-lg transition-all duration-300 backdrop-blur-sm"
+                      className="w-full px-4 lg:px-6 py-3 lg:py-4 bg-white/50 border-2 border-white/60 rounded-xl lg:rounded-2xl focus:outline-none focus:ring-4 focus:ring-[#413329]/20 focus:border-[#413329]/30 disabled:bg-gray-100/50 disabled:cursor-not-allowed text-[#413329] placeholder-[#413329]/40 text-base lg:text-lg transition-all duration-300 backdrop-blur-sm"
                       placeholder="Enter your email address"
                       required
                     />
@@ -479,8 +479,8 @@ const ProfilePage = () => {
 
                   {/* Phone Number Field */}
                   <div className="group">
-                    <label className="block text-lg font-semibold text-[#413329] mb-4 flex items-center">
-                      <Phone className="w-6 h-6 mr-3 text-[#413329]/60" />
+                    <label className="block text-base lg:text-lg font-semibold text-[#413329] mb-3 lg:mb-4 flex items-center">
+                      <Phone className="w-5 h-5 lg:w-6 lg:h-6 mr-2 lg:mr-3 text-[#413329]/60" />
                       Phone Number
                       <span className="text-rose-500 ml-1">*</span>
                     </label>
@@ -490,7 +490,7 @@ const ProfilePage = () => {
                       value={user.phoneNo}
                       onChange={handleInputChange}
                       disabled={!isEditing}
-                      className="w-full px-6 py-4 bg-white/50 border-2 border-white/60 rounded-2xl focus:outline-none focus:ring-4 focus:ring-[#413329]/20 focus:border-[#413329]/30 disabled:bg-gray-100/50 disabled:cursor-not-allowed text-[#413329] placeholder-[#413329]/40 text-lg transition-all duration-300 backdrop-blur-sm"
+                      className="w-full px-4 lg:px-6 py-3 lg:py-4 bg-white/50 border-2 border-white/60 rounded-xl lg:rounded-2xl focus:outline-none focus:ring-4 focus:ring-[#413329]/20 focus:border-[#413329]/30 disabled:bg-gray-100/50 disabled:cursor-not-allowed text-[#413329] placeholder-[#413329]/40 text-base lg:text-lg transition-all duration-300 backdrop-blur-sm"
                       placeholder="Enter your phone number"
                       required
                     />
@@ -498,8 +498,8 @@ const ProfilePage = () => {
 
                   {/* Password Field */}
                   <div className="group">
-                    <label className="block text-lg font-semibold text-[#413329] mb-4 flex items-center">
-                      <Lock className="w-6 h-6 mr-3 text-[#413329]/60" />
+                    <label className="block text-base lg:text-lg font-semibold text-[#413329] mb-3 lg:mb-4 flex items-center">
+                      <Lock className="w-5 h-5 lg:w-6 lg:h-6 mr-2 lg:mr-3 text-[#413329]/60" />
                       Password
                     </label>
                     <input
@@ -509,17 +509,17 @@ const ProfilePage = () => {
                       onChange={handleInputChange}
                       disabled={!isEditing}
                       placeholder={isEditing ? "Enter new password to update" : "••••••••"}
-                      className="w-full px-6 py-4 bg-white/50 border-2 border-white/60 rounded-2xl focus:outline-none focus:ring-4 focus:ring-[#413329]/20 focus:border-[#413329]/30 disabled:bg-gray-100/50 disabled:cursor-not-allowed text-[#413329] placeholder-[#413329]/40 text-lg transition-all duration-300 backdrop-blur-sm"
+                      className="w-full px-4 lg:px-6 py-3 lg:py-4 bg-white/50 border-2 border-white/60 rounded-xl lg:rounded-2xl focus:outline-none focus:ring-4 focus:ring-[#413329]/20 focus:border-[#413329]/30 disabled:bg-gray-100/50 disabled:cursor-not-allowed text-[#413329] placeholder-[#413329]/40 text-base lg:text-lg transition-all duration-300 backdrop-blur-sm"
                     />
-                    <p className="text-[#413329]/60 text-sm mt-3 flex items-center">
+                    <p className="text-[#413329]/60 text-xs lg:text-sm mt-2 lg:mt-3 flex items-center">
                       {isEditing ? (
                         <>
-                          <Sparkles className="w-4 h-4 mr-2" />
+                          <Sparkles className="w-3 h-3 lg:w-4 lg:h-4 mr-2" />
                           Leave blank to keep current password
                         </>
                       ) : (
                         <>
-                          <Shield className="w-4 h-4 mr-2" />
+                          <Shield className="w-3 h-3 lg:w-4 lg:h-4 mr-2" />
                           Password is encrypted and secure
                         </>
                       )}
@@ -528,20 +528,20 @@ const ProfilePage = () => {
 
                   {/* Enhanced Submit Button */}
                   {isEditing && (
-                    <div className="flex justify-end pt-8 border-t border-[#413329]/10">
+                    <div className="flex justify-end pt-6 lg:pt-8 border-t border-[#413329]/10">
                       <button
                         type="submit"
                         disabled={loading}
-                        className="bg-gradient-to-r from-[#413329] to-[#5D4A3A] text-[#FFE2D6] hover:from-[#FFE2D6] hover:to-[#FDBD99] hover:text-[#413329] border-2 border-[#413329] px-16 py-5 rounded-2xl font-bold text-lg transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-2xl hover:shadow-3xl flex items-center disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none group"
+                        className="bg-gradient-to-r from-[#413329] to-[#5D4A3A] text-[#FFE2D6] hover:from-[#FFE2D6] hover:to-[#FDBD99] hover:text-[#413329] border-2 border-[#413329] px-8 lg:px-16 py-3 lg:py-5 rounded-xl lg:rounded-2xl font-bold text-base lg:text-lg transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-2xl hover:shadow-3xl flex items-center disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none group w-full lg:w-auto justify-center"
                       >
                         {loading ? (
                           <>
-                            <div className="w-6 h-6 border-3 border-[#FFE2D6] border-t-transparent rounded-full animate-spin mr-3"></div>
+                            <div className="w-5 h-5 lg:w-6 lg:h-6 border-3 border-[#FFE2D6] border-t-transparent rounded-full animate-spin mr-2 lg:mr-3"></div>
                             Updating Profile...
                           </>
                         ) : (
                           <>
-                            <Save className="w-6 h-6 mr-3 group-hover:scale-110 transition-transform" />
+                            <Save className="w-5 h-5 lg:w-6 lg:h-6 mr-2 lg:mr-3 group-hover:scale-110 transition-transform" />
                             Save All Changes
                           </>
                         )}
@@ -554,32 +554,32 @@ const ProfilePage = () => {
           </div>
 
           {/* Enhanced Sidebar */}
-          <div className="space-y-6">
+          <div className="space-y-4 lg:space-y-6">
             {/* Account Status Card */}
-            <div className="bg-white/90 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/40 p-6 transform hover:scale-105 transition-all duration-300">
-              <h3 className="text-xl font-bold bg-gradient-to-r from-[#413329] to-[#5D4A3A] bg-clip-text text-transparent mb-4 flex items-center">
-                <Shield className="w-6 h-6 mr-3" />
+            <div className="bg-white/90 backdrop-blur-lg rounded-2xl lg:rounded-3xl shadow-2xl border border-white/40 p-4 lg:p-6 transform hover:scale-105 transition-all duration-300">
+              <h3 className="text-lg lg:text-xl font-bold bg-gradient-to-r from-[#413329] to-[#5D4A3A] bg-clip-text text-transparent mb-3 lg:mb-4 flex items-center">
+                <Shield className="w-5 h-5 lg:w-6 lg:h-6 mr-2 lg:mr-3" />
                 Security Status
               </h3>
-              <div className="space-y-4">
-                <div className="flex justify-between items-center py-2">
-                  <span className="text-[#413329]/70">Email Verification</span>
-                  <div className="inline-flex items-center px-3 py-1 bg-emerald-500/20 text-emerald-700 rounded-2xl text-sm font-semibold">
-                    <CheckCircle className="w-4 h-4 mr-1" />
+              <div className="space-y-3 lg:space-y-4">
+                <div className="flex justify-between items-center py-1 lg:py-2">
+                  <span className="text-[#413329]/70 text-sm lg:text-base">Email Verification</span>
+                  <div className="inline-flex items-center px-2 lg:px-3 py-1 bg-emerald-500/20 text-emerald-700 rounded-xl lg:rounded-2xl text-xs lg:text-sm font-semibold">
+                    <CheckCircle className="w-3 h-3 lg:w-4 lg:h-4 mr-1" />
                     Verified
                   </div>
                 </div>
-                <div className="flex justify-between items-center py-2">
-                  <span className="text-[#413329]/70">Phone Verification</span>
-                  <div className="inline-flex items-center px-3 py-1 bg-emerald-500/20 text-emerald-700 rounded-2xl text-sm font-semibold">
-                    <CheckCircle className="w-4 h-4 mr-1" />
+                <div className="flex justify-between items-center py-1 lg:py-2">
+                  <span className="text-[#413329]/70 text-sm lg:text-base">Phone Verification</span>
+                  <div className="inline-flex items-center px-2 lg:px-3 py-1 bg-emerald-500/20 text-emerald-700 rounded-xl lg:rounded-2xl text-xs lg:text-sm font-semibold">
+                    <CheckCircle className="w-3 h-3 lg:w-4 lg:h-4 mr-1" />
                     Verified
                   </div>
                 </div>
-                <div className="flex justify-between items-center py-2">
-                  <span className="text-[#413329]/70">2FA Protection</span>
-                  <div className="inline-flex items-center px-3 py-1 bg-amber-500/20 text-amber-700 rounded-2xl text-sm font-semibold">
-                    <Zap className="w-4 h-4 mr-1" />
+                <div className="flex justify-between items-center py-1 lg:py-2">
+                  <span className="text-[#413329]/70 text-sm lg:text-base">2FA Protection</span>
+                  <div className="inline-flex items-center px-2 lg:px-3 py-1 bg-amber-500/20 text-amber-700 rounded-xl lg:rounded-2xl text-xs lg:text-sm font-semibold">
+                    <Zap className="w-3 h-3 lg:w-4 lg:h-4 mr-1" />
                     Recommended
                   </div>
                 </div>
@@ -587,27 +587,27 @@ const ProfilePage = () => {
             </div>
 
             {/* Membership Progress Card */}
-            <div className="bg-gradient-to-br from-[#413329] to-[#5D4A3A] rounded-3xl shadow-2xl border border-white/20 p-6 text-white transform hover:scale-105 transition-all duration-300">
-              <h3 className="text-xl font-bold mb-4 flex items-center">
-                <Crown className="w-6 h-6 mr-3" />
+            <div className="bg-gradient-to-br from-[#413329] to-[#5D4A3A] rounded-2xl lg:rounded-3xl shadow-2xl border border-white/20 p-4 lg:p-6 text-white transform hover:scale-105 transition-all duration-300">
+              <h3 className="text-lg lg:text-xl font-bold mb-3 lg:mb-4 flex items-center">
+                <Crown className="w-5 h-5 lg:w-6 lg:h-6 mr-2 lg:mr-3" />
                 Membership Progress
               </h3>
-              <div className="space-y-4">
+              <div className="space-y-3 lg:space-y-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-white/80">Current Tier</span>
-                  <span className="font-bold text-amber-300">{userStats.membershipTier}</span>
+                  <span className="text-white/80 text-sm lg:text-base">Current Tier</span>
+                  <span className="font-bold text-amber-300 text-sm lg:text-base">{userStats.membershipTier}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-white/80">Loyalty Points</span>
-                  <span className="font-bold">{userStats.loyaltyPoints}</span>
+                  <span className="text-white/80 text-sm lg:text-base">Loyalty Points</span>
+                  <span className="font-bold text-sm lg:text-base">{userStats.loyaltyPoints}</span>
                 </div>
-                <div className="w-full bg-white/20 rounded-full h-3 mt-4">
+                <div className="w-full bg-white/20 rounded-full h-2 lg:h-3 mt-3 lg:mt-4">
                   <div 
-                    className="bg-gradient-to-r from-amber-400 to-yellow-500 h-3 rounded-full transition-all duration-1000 ease-out"
+                    className="bg-gradient-to-r from-amber-400 to-yellow-500 h-2 lg:h-3 rounded-full transition-all duration-1000 ease-out"
                     style={{ width: userStats.membershipTier === 'Platinum' ? '100%' : userStats.membershipTier === 'Gold' ? '75%' : '50%' }}
                   ></div>
                 </div>
-                <p className="text-white/60 text-sm text-center mt-2">
+                <p className="text-white/60 text-xs lg:text-sm text-center mt-2">
                   {userStats.membershipTier === 'Platinum' 
                     ? 'Maximum tier achieved! 🎉'
                     : `Progress to ${userStats.membershipTier === 'Silver' ? 'Gold' : 'Platinum'} Tier`
@@ -617,24 +617,24 @@ const ProfilePage = () => {
             </div>
 
             {/* Quick Stats Card */}
-            <div className="bg-white/90 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/40 p-6 transform hover:scale-105 transition-all duration-300">
-              <h3 className="text-xl font-bold bg-gradient-to-r from-[#413329] to-[#5D4A3A] bg-clip-text text-transparent mb-4">
+            <div className="bg-white/90 backdrop-blur-lg rounded-2xl lg:rounded-3xl shadow-2xl border border-white/40 p-4 lg:p-6 transform hover:scale-105 transition-all duration-300">
+              <h3 className="text-lg lg:text-xl font-bold bg-gradient-to-r from-[#413329] to-[#5D4A3A] bg-clip-text text-transparent mb-3 lg:mb-4">
                 Account Overview
               </h3>
-              <div className="space-y-4 text-sm">
-                <div className="flex justify-between items-center py-2 border-b border-[#413329]/10">
+              <div className="space-y-3 lg:space-y-4 text-xs lg:text-sm">
+                <div className="flex justify-between items-center py-1 lg:py-2 border-b border-[#413329]/10">
                   <span className="text-[#413329]/70">Member Since</span>
                   <span className="font-semibold text-[#413329]">{formatMemberSince(userStats.memberSince)}</span>
                 </div>
-                <div className="flex justify-between items-center py-2 border-b border-[#413329]/10">
+                <div className="flex justify-between items-center py-1 lg:py-2 border-b border-[#413329]/10">
                   <span className="text-[#413329]/70">Total Bookings</span>
                   <span className="font-semibold text-[#413329]">{userStats.totalBookings}</span>
                 </div>
-                <div className="flex justify-between items-center py-2 border-b border-[#413329]/10">
+                <div className="flex justify-between items-center py-1 lg:py-2 border-b border-[#413329]/10">
                   <span className="text-[#413329]/70">Success Rate</span>
                   <span className="font-semibold text-[#413329]">{userStats.successRate}</span>
                 </div>
-                <div className="flex justify-between items-center py-2">
+                <div className="flex justify-between items-center py-1 lg:py-2">
                   <span className="text-[#413329]/70">Account Status</span>
                   <span className="font-semibold text-emerald-600">Active</span>
                 </div>
