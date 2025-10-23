@@ -45,8 +45,8 @@ const AdminSidebar = () => {
     {
       name: 'Customers',
       icon: Users,
-      path: '/admin/customers',
-      active: pathname === '/admin/customers'
+      path: '/admin/customer',
+      active: pathname === '/admin/customer'
     },
     {
       name: 'Staff',
@@ -128,7 +128,7 @@ const AdminSidebar = () => {
         <div className="p-6 border-b  border-[#413329]/10">
           <div className="flex items-center space-x-4">
             <div className="w-12 h-12 bg-gradient-to-br from-[#413329] to-[#5D4A3A] rounded-2xl flex items-center justify-center shadow-lg border-2 border-white/20">
-              <Shield className="w-6 h-6 text-[#FFE2D6]" />
+              <Shield onClick={()=>router.push("/")} className=" cursor-pointer w-6 h-6 text-[#FFE2D6]" />
             </div>
             <div>
               <h1 className="text-2xl font-black bg-gradient-to-r from-[#413329] to-[#5D4A3A] bg-clip-text text-transparent">

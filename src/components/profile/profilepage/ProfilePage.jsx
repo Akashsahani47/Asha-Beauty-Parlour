@@ -307,16 +307,7 @@ const ProfilePage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#FFF9F5] via-[#FDBD99] to-[#FAF3EB] py-8 ml-0 lg:ml-80 transition-all duration-500">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Enhanced Professional Header */}
-        <div className="text-center mb-16">
-          <h1 className="text-6xl font-black bg-gradient-to-r from-[#413329] via-[#5D4A3A] to-[#413329] bg-clip-text text-transparent mb-6">
-            Profile Dashboard
-          </h1>
-          <p className="text-[#413329]/70 text-xl max-w-3xl mx-auto leading-relaxed font-medium">
-            Manage your professional identity and account preferences with precision and style
-          </p>
-        </div>
-
+       
         {/* Success/Error Messages */}
         {message && (
           <div className={`mb-8 p-6 rounded-2xl backdrop-blur-lg border-2 ${
@@ -336,8 +327,8 @@ const ProfilePage = () => {
         )}
 
         {/* Enhanced Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          <div className="bg-white/90 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/40 p-6 transform hover:scale-105 transition-all duration-300 group">
+        <div className="grid grid-cols-1 hidden md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+          <div className="bg-white/90  backdrop-blur-lg rounded-3xl shadow-2xl border border-white/40 p-6 transform hover:scale-105 transition-all duration-300 group">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[#413329]/60 text-sm font-semibold mb-2 uppercase tracking-wide">Total Bookings</p>
@@ -360,7 +351,7 @@ const ProfilePage = () => {
               <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-500 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
                 <Award className="w-6 h-6 text-white" />
               </div>
-            </div>ƒ
+            </div>
           </div>
 
           <div className="bg-white/90 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/40 p-6 transform hover:scale-105 transition-all duration-300 group">

@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { 
   Search, 
   Filter, 
@@ -16,7 +16,8 @@ import {
   Edit,
   Trash2,
   Download,
-  RefreshCw
+  RefreshCw,
+  Bell
 } from 'lucide-react'
 import useUserStore from '@/store/useStore'
 
@@ -27,7 +28,12 @@ const Orders = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
   const [paymentFilter, setPaymentFilter] = useState('all')
+  const [autoRefresh, setAutoRefresh] = useState(true)
+  const [newOrdersCount, setNewOrdersCount] = useState(0)
   const { token } = useUserStore()
+  
+  // Use useRef to persist known order IDs across renders
+  const knownOrderIds = useRef(new Set())
 
   // Fetch bookings when component mounts AND when token becomes available
   useEffect(() => {
@@ -39,9 +45,22 @@ const Orders = () => {
     }
   }, [token])
 
-  const fetchBookings = async () => {
+  // Auto-refresh every 30 seconds
+  useEffect(() => {
+    if (!token || !autoRefresh) return;
+
+    const interval = setInterval(() => {
+      fetchBookings(true);
+    }, 10000);
+
+    return () => clearInterval(interval);
+  }, [token, autoRefresh]);
+
+  const fetchBookings = async (isAutoRefresh = false) => {
     try {
-      setLoading(true)
+      if (!isAutoRefresh) {
+        setLoading(true);
+      }
       setError('')
 
       if (!token) {
@@ -69,16 +88,67 @@ const Orders = () => {
       const data = await response.json()
       
       if (data.success) {
-        setBookings(data.bookings || [])
+        const newBookings = data.bookings || [];
+        
+        // If auto-refresh, detect TRULY new orders
+        if (isAutoRefresh) {
+          detectNewOrders(newBookings);
+        } else {
+          // For manual refresh, reset known orders
+          const orderIds = newBookings.map(booking => booking._id);
+          knownOrderIds.current = new Set(orderIds);
+          setNewOrdersCount(0); // Clear any existing notifications
+        }
+        
+        setBookings(newBookings)
+        setError('')
       } else {
         throw new Error(data.message || 'Failed to fetch bookings')
       }
     } catch (error) {
       console.error('Error fetching bookings:', error)
-      setError(error.message)
+      if (!isAutoRefresh) {
+        setError(error.message)
+      }
     } finally {
-      setLoading(false)
+      if (!isAutoRefresh) {
+        setLoading(false)
+      }
     }
+  }
+
+  // Smart function to detect only truly new orders
+  const detectNewOrders = (newBookings) => {
+    if (!newBookings.length) return;
+
+    const newOrderIds = new Set(newBookings.map(booking => booking._id));
+    const currentKnownIds = knownOrderIds.current;
+
+    console.log('Current known IDs:', Array.from(currentKnownIds));
+    console.log('New order IDs:', Array.from(newOrderIds));
+
+    // Find orders that exist in new data but not in known data
+    const trulyNewOrders = newBookings.filter(booking => !currentKnownIds.has(booking._id));
+    
+    console.log('Truly new orders found:', trulyNewOrders.length);
+
+    if (trulyNewOrders.length > 0) {
+      console.log(`🎉 Found ${trulyNewOrders.length} new orders:`, trulyNewOrders.map(o => ({ id: o._id, customer: o.user?.name })));
+      setNewOrdersCount(trulyNewOrders.length);
+      
+      // Update known orders with the new ones
+      trulyNewOrders.forEach(order => {
+        knownOrderIds.current.add(order._id);
+      });
+      console.log('Updated known IDs:', Array.from(knownOrderIds.current));
+    } else {
+      console.log('No new orders detected');
+    }
+  }
+
+  // Clear new orders notification
+  const clearNewOrdersNotification = () => {
+    setNewOrdersCount(0);
   }
 
   // Filter bookings based on search term and filters
@@ -166,7 +236,7 @@ const Orders = () => {
   // Loading state
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#FFF9F5] via-[#FDBD99] to-[#FAF3EB] py-8 ml-0  transition-all duration-500">
+      <div className="min-h-screen bg-gradient-to-br from-[#FFF9F5] via-[#FDBD99] to-[#FAF3EB] py-8 ml-0 lg:ml-80 transition-all duration-500">
         <div className="max-w-7xl mx-auto px-4">
           {/* Header Skeleton */}
           <div className="text-center mb-12">
@@ -178,8 +248,8 @@ const Orders = () => {
 
           {/* Filters Skeleton */}
           <div className="bg-white/80 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/40 p-6 mb-8 animate-pulse">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {[...Array(3)].map((_, i) => (
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              {[...Array(4)].map((_, i) => (
                 <div key={i} className="h-14 bg-gradient-to-r from-[#413329]/10 to-[#413329]/5 rounded-2xl"></div>
               ))}
             </div>
@@ -213,8 +283,28 @@ const Orders = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#FFF9F5] via-[#FDBD99] to-[#FAF3EB] py-8 ml-0 lg:ml-80 transition-all duration-500">
       <div className="max-w-7xl mx-auto px-4">
-      
 
+        {/* New Orders Notification - Only shows when ACTUALLY new orders */}
+        {newOrdersCount > 0 && (
+          <div className="mb-6 p-4 bg-gradient-to-r from-emerald-500/20 to-green-500/20 text-emerald-700 rounded-2xl backdrop-blur-lg border-2 border-emerald-300/50 animate-pulse">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <Bell className="w-5 h-5 animate-bounce text-emerald-600" />
+                <span className="font-semibold text-emerald-800">
+                  🎉 {newOrdersCount} new order(s) just came in!
+                </span>
+              </div>
+              <button 
+                onClick={clearNewOrdersNotification}
+                className="text-emerald-700 hover:text-emerald-800 font-semibold px-3 py-1 rounded-lg hover:bg-emerald-500/20 transition-colors border border-emerald-300"
+              >
+                Dismiss
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Rest of your component remains the same */}
         {/* Error Message */}
         {error && (
           <div className="mb-8 p-6 bg-rose-500/20 text-rose-700 rounded-2xl backdrop-blur-lg border-2 border-rose-300/50">
@@ -222,7 +312,7 @@ const Orders = () => {
               <AlertCircle className="w-6 h-6 flex-shrink-0" />
               <span className="text-lg font-semibold">{error}</span>
               <button 
-                onClick={fetchBookings}
+                onClick={() => fetchBookings()}
                 className="ml-4 bg-rose-600 text-white px-4 py-2 rounded-xl hover:bg-rose-700 transition-colors"
               >
                 Retry
@@ -232,7 +322,7 @@ const Orders = () => {
         )}
 
         {/* Stats Overview */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
           <div className="bg-white/90 backdrop-blur-lg rounded-2xl shadow-lg border border-white/40 p-4 text-center">
             <div className="text-2xl font-bold text-[#413329]">{bookings.length}</div>
             <div className="text-[#413329]/60 text-sm">Total Bookings</div>
@@ -255,11 +345,20 @@ const Orders = () => {
             </div>
             <div className="text-[#413329]/60 text-sm">Paid</div>
           </div>
+          <div className="bg-white/90 backdrop-blur-lg rounded-2xl shadow-lg border border-white/40 p-4 text-center">
+            <div className="flex items-center justify-center space-x-2 mb-2">
+              <div className={`w-3 h-3 rounded-full ${autoRefresh ? 'bg-emerald-500 animate-pulse' : 'bg-gray-400'}`} />
+              <div className="text-2xl font-bold text-[#413329]">
+                {autoRefresh ? 'ON' : 'OFF'}
+              </div>
+            </div>
+            <div className="text-[#413329]/60 text-sm">Auto-Refresh</div>
+          </div>
         </div>
 
         {/* Filters Card */}
         <div className="bg-white/90 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/40 p-6 mb-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
             {/* Search Input */}
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#413329]/40 w-5 h-5" />
@@ -303,14 +402,27 @@ const Orders = () => {
               </select>
             </div>
 
-            {/* Refresh Button */}
+            {/* Auto-Refresh Toggle */}
             <button
-              onClick={fetchBookings}
+              onClick={() => setAutoRefresh(!autoRefresh)}
+              className={`px-6 py-3 rounded-2xl font-semibold transition-all duration-300 transform hover:scale-105 border-2 flex items-center justify-center space-x-2 ${
+                autoRefresh 
+                  ? 'bg-emerald-500/20 text-emerald-700 border-emerald-300 hover:bg-emerald-500/30' 
+                  : 'bg-gray-500/20 text-gray-700 border-gray-300 hover:bg-gray-500/30'
+              }`}
+            >
+              <RefreshCw className={`w-5 h-5 ${autoRefresh ? 'animate-spin' : ''}`} />
+              <span>Auto: {autoRefresh ? 'ON' : 'OFF'}</span>
+            </button>
+
+            {/* Manual Refresh Button */}
+            <button
+              onClick={() => fetchBookings()}
               disabled={!token}
               className="bg-gradient-to-r from-[#413329] to-[#5D4A3A] text-[#FFE2D6] hover:from-[#FFE2D6] hover:to-[#FDBD99] hover:text-[#413329] border-2 border-[#413329] px-6 py-3 rounded-2xl font-semibold transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <RefreshCw className="w-5 h-5 mr-2" />
-              Refresh
+              Refresh Now
             </button>
           </div>
         </div>
@@ -323,7 +435,7 @@ const Orders = () => {
               <h2 className="text-xl font-bold">All Bookings ({filteredBookings.length})</h2>
               <button 
                 className="flex items-center space-x-2 bg-white/20 backdrop-blur-sm hover:bg-white/30 px-4 py-2 rounded-xl transition-colors disabled:opacity-50"
-                disabled={!token}
+                disabled={!token || filteredBookings.length === 0}
               >
                 <Download className="w-4 h-4" />
                 <span>Export</span>
