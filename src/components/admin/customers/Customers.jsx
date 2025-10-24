@@ -123,9 +123,6 @@ const Customers = () => {
         
         {/* Header - Mobile Optimized */}
         <div className="text-center mb-6 lg:mb-12">
-          <div className="inline-flex items-center justify-center w-16 h-16 lg:w-20 lg:h-20 bg-gradient-to-br from-[#413329] to-[#5D4A3A] rounded-2xl lg:rounded-3xl shadow-2xl mb-4 lg:mb-6">
-            <Users className="w-8 h-8 lg:w-10 lg:h-10 text-[#FFE2D6]" />
-          </div>
           <h1 className="text-3xl lg:text-5xl font-black bg-gradient-to-r from-[#413329] via-[#5D4A3A] to-[#413329] bg-clip-text text-transparent mb-2 lg:mb-4">
             Customers
           </h1>

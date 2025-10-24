@@ -279,7 +279,15 @@ const Orders = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#FFF9F5] via-[#FDBD99] to-[#FAF3EB] py-4 lg:py-8 ml-0 lg:ml-80 transition-all duration-500 overflow-x-hidden">
       <div className="max-w-7xl mx-auto px-3 lg:px-4">
-
+<div className="text-center mb-12">
+         
+          <h1 className="text-5xl font-black bg-gradient-to-r from-[#413329] via-[#5D4A3A] to-[#413329] bg-clip-text text-transparent mb-4">
+            Bookings Management
+          </h1>
+          <p className="text-[#413329]/70 text-lg">
+            Manage and monitor all customer bookings in one place
+          </p>
+        </div>
         {/* New Orders Notification */}
         {newOrdersCount > 0 && (
           <div className="mb-4 lg:mb-6 p-3 lg:p-4 bg-gradient-to-r from-emerald-500/20 to-green-500/20 text-emerald-700 rounded-xl lg:rounded-2xl backdrop-blur-lg border-2 border-emerald-300/50 animate-pulse">

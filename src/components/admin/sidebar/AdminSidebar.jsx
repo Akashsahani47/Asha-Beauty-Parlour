@@ -60,30 +60,24 @@ const AdminSidebar = () => {
       path: '/admin/payments',
       active: pathname === '/admin/payments'
     },
-    {
-      name: 'Reviews',
-      icon: Star,
-      path: '/admin/reviews',
-      active: pathname === '/admin/reviews'
-    },
-    {
-      name: 'Messages',
-      icon: MessageSquare,
-      path: '/admin/messages',
-      active: pathname === '/admin/messages'
-    },
-    {
-      name: 'Analytics',
-      icon: BarChart3,
-      path: '/admin/analytics',
-      active: pathname === '/admin/analytics'
-    },
-    {
-      name: 'Settings',
-      icon: Settings,
-      path: '/admin/settings',
-      active: pathname === '/admin/settings'
-    }
+    // {
+    //   name: 'Reviews',
+    //   icon: Star,
+    //   path: '/admin/reviews',
+    //   active: pathname === '/admin/reviews'
+    // },
+    // { 
+    //   name: 'Messages',
+    //   icon: MessageSquare,
+    //   path: '/admin/messages',
+    //   active: pathname === '/admin/messages'
+    // },
+    // {
+    //   name: 'Settings',
+    //   icon: Settings,
+    //   path: '/admin/settings',
+    //   active: pathname === '/admin/settings'
+    // }
   ]
 
   const handleNavigation = (path) => {
