@@ -60,12 +60,12 @@ const AdminSidebar = () => {
       path: '/admin/payments',
       active: pathname === '/admin/payments'
     },
-    // {
-    //   name: 'Reviews',
-    //   icon: Star,
-    //   path: '/admin/reviews',
-    //   active: pathname === '/admin/reviews'
-    // },
+    {
+      name: 'Reviews',
+      icon: Star,
+      path: '/admin/reviews',
+      active: pathname === '/admin/reviews'
+    },
     // { 
     //   name: 'Messages',
     //   icon: MessageSquare,
