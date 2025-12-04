@@ -30,7 +30,7 @@ const useUserStore = create(
     {
       name: "user-storage", // name for localStorage
       // Only store token in localStorage, not the entire user object
-      partialize: (state) => ({ token: state.token }),
+     // partialize: (state) => ({ token: state.token }),
     }
   )
 );
