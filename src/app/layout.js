@@ -3,6 +3,7 @@ import "./globals.css";
 import Header from "@/components/homePage/header/Header";
 import { AuthProvider } from '@/context/AuthContext';
 import NavbarWrapper from "./NavbarWrapper";
+import { Analytics } from "@vercel/analytics/next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -55,7 +56,7 @@ export const metadata = {
     images: ["/og-image.jpg"],
   },
   icons: {
-    icon: "/favicon.ico",
+    icon: "/logo.png",
   },
 };
 
@@ -67,6 +68,7 @@ export default function RootLayout({ children }) {
             <NavbarWrapper/>
           <main className="min-h-screen">
             {children}
+            <Analytics />
           </main>
         </AuthProvider>
       </body>
